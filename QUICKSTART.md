@@ -10,7 +10,7 @@ pip install -e .
 ## Test the Download Agent
 
 ```python
-from aw_agents.download import DownloadAgent
+from aw_agents.agents.download import DownloadAgent
 
 # Create agent
 agent = DownloadAgent()
@@ -29,33 +29,41 @@ if result['success']:
 ## Try the Interactive Notebook
 
 ```bash
-jupyter notebook aw_agents/download/demo_download_agent.ipynb
+jupyter notebook aw_agents/agents/download/demo_download_agent.ipynb
 ```
 
 The notebook includes comprehensive examples and tests.
 
 ## Deploy to Claude Desktop
 
+**Easiest Way - Automatic Configuration:**
+
+```bash
+# The agent automatically configures Claude Desktop!
+python -m aw_agents.agents.download.agent --mcp
+```
+
+That's it! The agent will:
+- Automatically add itself to your Claude Desktop config
+- Start the MCP server
+- Tell you to restart Claude Desktop
+
+**Alternative - Manual Setup:**
+
 1. **Generate MCP server script:**
    ```bash
    python scripts/deploy_mcp.py DownloadAgent --output ~/mcp_download.py
    ```
 
-2. **Edit Claude Desktop config:**
+2. **Add to Claude Desktop config:**
    
-   - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-   - **Linux**: `~/.config/Claude/claude_desktop_config.json`
+   ```python
+   from aw.util import claude_desktop_config
    
-   Add:
-   ```json
-   {
-     "mcpServers": {
-       "download": {
-         "command": "python",
-         "args": ["/absolute/path/to/mcp_download.py"]
-       }
-     }
+   mcp = claude_desktop_config()
+   mcp['download'] = {
+       'command': 'python',
+       'args': ['/absolute/path/to/mcp_download.py']
    }
    ```
 
@@ -66,6 +74,11 @@ The notebook includes comprehensive examples and tests.
    Download this paper for me: https://arxiv.org/pdf/2103.00020.pdf
    Context: "Attention is All You Need"
    ```
+
+**Config file locations** (if you need to edit manually):
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **Linux**: `~/.config/Claude/claude_desktop_config.json`
 
 **Note**: Install MCP first if needed: `pip install -e .[mcp]`
 
@@ -99,7 +112,7 @@ pytest tests/ -v
 pytest tests/ --cov=aw_agents --cov-report=term-missing
 
 # Run doctests
-python -m doctest aw_agents/download/download_core.py
+python -m doctest aw_agents/agents/download/download_core.py
 ```
 
 ## Key Features
@@ -115,7 +128,7 @@ python -m doctest aw_agents/download/download_core.py
 - **Full README**: `README.md`
 - **API Documentation**: Run API server and visit `/docs`
 - **Examples**: See `examples.py` (if created)
-- **Demo Notebook**: `aw_agents/download/demo_download_agent.ipynb`
+- **Demo Notebook**: `aw_agents/agents/download/demo_download_agent.ipynb`
 
 ## Troubleshooting
 

@@ -13,6 +13,13 @@
 - 📦 **Batteries Included**: Built-in download agent with smart features
 - 🛠️ **Easy to Extend**: Simple base class for creating new agents
 - 🎨 **Clean Architecture**: Separation of agent logic and platform adapters
+- 🚀 **Run as Script**: Each agent can run directly as a server with built-in setup instructions
+
+## Documentation
+
+- 📚 **[Quick Usage Guide](USAGE.md)** - Simplest way to run agents
+- 📖 **[This README](#)** - Comprehensive documentation
+- 💻 **[Examples](examples.py)** - Code examples
 
 ## Installation
 
@@ -39,17 +46,39 @@ pip install -e .[dev]
 
 ```bash
 # Test the installation
-python -c "from aw_agents.download import DownloadAgent; agent = DownloadAgent(); print('✓ Installation successful!')"
+python -c "from aw_agents.agents.download import DownloadAgent; agent = DownloadAgent(); print('✓ Installation successful!')"
 ```
 
 ## Quick Start
+
+### Easiest Way: Run Agent as Server
+
+Each agent can be run directly as a server with built-in instructions:
+
+```bash
+# For Claude Desktop (MCP server)
+python -m aw_agents.agents.download.agent --mcp
+
+# For ChatGPT (FastAPI server)
+python -m aw_agents.agents.download.agent --api
+
+# With ngrok for remote access
+python -m aw_agents.agents.download.agent --api --server-url https://your-ngrok-url.ngrok.io
+```
+
+The agent will print:
+- ✅ Configuration snippets (copy-paste ready)
+- 📍 Exact file locations for configs
+- 📋 Step-by-step setup instructions
+- 🚀 Everything you need to get started
+- 🌐 Proper OpenAPI schema with server URLs (fixes ChatGPT import issues)
 
 ### Using the Download Agent
 
 The package includes a smart download agent out of the box:
 
 ```python
-from aw_agents.download import DownloadAgent
+from aw_agents.agents.download import DownloadAgent
 
 agent = DownloadAgent()
 
@@ -69,10 +98,54 @@ print(result['data']['path'])  # ~/Downloads/Important_ML_Paper.pdf
 
 ### Deploy to Claude Desktop (MCP)
 
+**Quick Start - Run the agent directly:**
+
+```bash
+# The agent will automatically configure Claude Desktop for you!
+python -m aw_agents.agents.download.agent --mcp
+
+# Or run directly:
+python aw_agents/agents/download/agent.py --mcp
+```
+
+The agent will:
+- **Automatically add itself to your Claude Desktop config**
+- Start the MCP server
+- Give you step-by-step instructions
+- You just need to restart Claude Desktop!
+
+**Managing Claude Desktop Configuration:**
+
+The agent uses `claude_desktop_config()` from the `aw` package to automatically manage your Claude Desktop configuration:
+
+```python
+from aw.util import claude_desktop_config
+
+# View all configured MCP servers
+mcp = claude_desktop_config()
+list(mcp)  # ['download', 'other_server', ...]
+
+# Add a new server manually
+mcp['my_agent'] = {
+    'command': 'python',
+    'args': ['/path/to/my_agent.py']
+}
+
+# Remove a server
+del mcp['old_server']
+
+# View a server's config
+print(mcp['download'])
+```
+
+**Manual Setup (Alternative):**
+
+If you prefer to create your own script and manage configuration manually:
+
 **Step 1: Create MCP Server Script**
 
 ```python
-from aw_agents.download import DownloadAgent
+from aw_agents.agents.download import DownloadAgent
 from aw_agents.adapters import MCPAdapter
 
 agent = DownloadAgent()
@@ -91,24 +164,23 @@ python scripts/deploy_mcp.py DownloadAgent --output mcp_download.py
 
 **Step 2: Configure Claude Desktop**
 
-Edit your Claude Desktop config file:
+Using `claude_desktop_config()`:
+```python
+from aw.util import claude_desktop_config
+
+mcp = claude_desktop_config()
+mcp['download'] = {
+    'command': 'python',
+    'args': ['/absolute/path/to/mcp_download.py']
+}
+```
+
+Or manually edit the config file:
 - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 - **Linux**: `~/.config/Claude/claude_desktop_config.json`
 
-Add this configuration:
-```json
-{
-  "mcpServers": {
-    "download": {
-      "command": "python",
-      "args": ["/absolute/path/to/mcp_download.py"]
-    }
-  }
-}
-```
-
-**Important**: Use the absolute path to your script, not `~/` or relative paths.
+**Important**: Use absolute paths, not `~/` or relative paths.
 
 **Step 3: Restart Claude Desktop**
 
@@ -129,10 +201,28 @@ Context: "Attention is All You Need"
 
 ### Deploy to ChatGPT Custom GPT (FastAPI)
 
+**Quick Start - Run the agent directly:**
+
+```bash
+# The agent will print setup instructions for you
+python -m aw_agents.agents.download.agent --api
+
+# Or specify a custom port:
+python aw_agents/agents/download/agent.py --api --port 8080
+```
+
+The agent will:
+- Start the FastAPI server
+- Print the server URLs (API, docs, OpenAPI schema)
+- Show you exactly how to configure ChatGPT Custom GPT
+- Provide ngrok instructions for remote access
+
+**Manual Setup (Alternative):**
+
 **Step 1: Create and Start API Server**
 
 ```python
-from aw_agents.download import DownloadAgent
+from aw_agents.agents.download import DownloadAgent
 from aw_agents.adapters import OpenAPIAdapter
 
 agent = DownloadAgent()
@@ -285,7 +375,7 @@ Smart content downloader with:
 **Examples:**
 
 ```python
-from aw_agents.download import DownloadAgent
+from aw_agents.agents.download import DownloadAgent
 
 agent = DownloadAgent()
 
@@ -317,7 +407,25 @@ result = agent.execute_tool('list_downloads', {
 
 **Smart Features:**
 
-1. **Landing Page Detection**:
+1. **Intelligent Extension Detection**:
+   ```python
+   # Priority-based routing handles edge cases correctly
+   agent.execute_tool('download_content', {
+       'url': 'https://arxiv.org/pdf/2103.00020.pdf',
+       'context': 'ML Paper'
+   })
+   # Result: ML_Paper.pdf ✓ (not .html despite Content-Type header)
+   
+   # Explicit extension override
+   agent.execute_tool('download_content', {
+       'url': 'https://example.com/ambiguous_file',
+       'context': 'Data',
+       'explicit_extension': 'csv'
+   })
+   # Result: Data.csv
+   ```
+
+2. **Landing Page Detection**:
    ```python
    # Input: Landing page URL
    agent.execute_tool('download_content', {
@@ -326,7 +434,7 @@ result = agent.execute_tool('list_downloads', {
    # Agent detects HTML, finds PDF link, downloads PDF, warns about redirect
    ```
 
-2. **GitHub URL Handling**:
+3. **GitHub URL Handling**:
    ```python
    # Input: GitHub blob URL
    'https://github.com/user/repo/blob/main/data.csv'
@@ -334,7 +442,7 @@ result = agent.execute_tool('list_downloads', {
    'https://raw.githubusercontent.com/user/repo/main/data.csv'
    ```
 
-3. **Context-Aware Naming**:
+4. **Context-Aware Naming**:
    ```python
    # Without context:
    # Filename: 2103.00020.pdf
@@ -347,33 +455,90 @@ result = agent.execute_tool('list_downloads', {
    # Filename: Attention_is_All_You_Need_Transformer_Paper.pdf
    ```
 
+### Customizing Extension Detection
+
+The download agent uses configurable routing from the `aw.routing` module:
+
+```python
+from aw.routing import ExtensionRouter
+from aw_agents.agents.download import DownloadEngine
+
+# Inspect default mappings
+router = ExtensionRouter()
+print(router.content_type_map)
+print(router.priority_extensions)
+
+# Customize mappings
+router.content_type_map['text/x-log'] = '.log'
+
+# Add custom detection strategy
+def detect_special(ctx):
+    if 'special' in ctx.url:
+        return '.special'
+    return None
+
+custom_router = router.with_prepended_strategy(detect_special)
+
+# Use in agent
+engine = DownloadEngine(extension_router=custom_router)
+```
+
+See [EXTENSION_ROUTING_SUMMARY.md](EXTENSION_ROUTING_SUMMARY.md) for details.
+
 ## Integration Guides
 
 ### Claude Desktop Integration
+
+**Easiest Way - Automatic Configuration:**
+
+```bash
+# Run the agent - it will automatically configure Claude Desktop!
+python -m aw_agents.agents.download.agent --mcp
+```
+
+The agent automatically adds itself to your Claude Desktop config. Just restart Claude Desktop and you're done!
+
+**Alternative - Manual Configuration:**
 
 1. Create MCP server script:
    ```bash
    python scripts/deploy_mcp.py DownloadAgent --output ~/mcp_download.py
    ```
 
-2. Edit Claude Desktop config:
-   - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-   - **Linux**: `~/.config/Claude/claude_desktop_config.json`
-
-3. Add to config:
-   ```json
-   {
-     "mcpServers": {
-       "download": {
-         "command": "python",
-         "args": ["/absolute/path/to/mcp_download.py"]
-       }
-     }
+2. Add to Claude Desktop config using `claude_desktop_config()`:
+   ```python
+   from aw.util import claude_desktop_config
+   
+   mcp = claude_desktop_config()
+   mcp['download'] = {
+       'command': 'python',
+       'args': ['/absolute/path/to/mcp_download.py']
    }
    ```
 
-4. Restart Claude Desktop
+3. Restart Claude Desktop
+
+**Managing Servers:**
+
+```python
+from aw.util import claude_desktop_config
+
+mcp = claude_desktop_config()
+
+# List all servers
+list(mcp)  # ['download', 'other_server', ...]
+
+# View a server's config
+print(mcp['download'])
+
+# Remove a server
+del mcp['old_server']
+```
+
+**Config file locations:**
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **Linux**: `~/.config/Claude/claude_desktop_config.json`
 
 **Usage Examples in Claude:**
 
@@ -497,7 +662,7 @@ which python  # Check which Python Claude is using
 **Solution**:
 ```bash
 # Verify installation
-python -c "from aw_agents.download import DownloadAgent; print('✓ Success')"
+python -c "from aw_agents.agents.download import DownloadAgent; print('✓ Success')"
 
 # Reinstall if needed
 pip install -e .[all]

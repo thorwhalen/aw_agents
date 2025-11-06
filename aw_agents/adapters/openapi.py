@@ -41,6 +41,7 @@ class OpenAPIAdapter:
         title: str = "AI Agent API",
         description: str = "AI Agent exposed via OpenAPI",
         version: str = "1.0.0",
+        server_url: Optional[str] = None,
     ):
         """
         Initialize OpenAPI adapter.
@@ -50,6 +51,7 @@ class OpenAPIAdapter:
             title: API title
             description: API description
             version: API version
+            server_url: Optional server URL for OpenAPI schema (e.g., for ngrok)
         """
         if not FASTAPI_AVAILABLE:
             raise ImportError(
@@ -77,6 +79,7 @@ class OpenAPIAdapter:
             allow_headers=["*"],
         )
 
+        self.server_url = server_url
         self._setup_routes()
 
     def _setup_routes(self):
@@ -174,6 +177,36 @@ class OpenAPIAdapter:
         }
         return type_map.get(json_type, str)
 
+    def _customize_openapi_schema(self, host: str, port: int):
+        """Add servers field to OpenAPI schema."""
+        if self.app.openapi_schema:
+            return self.app.openapi_schema
+
+        # Use get_openapi to generate the schema (instead of calling self.app.openapi())
+        from fastapi.openapi.utils import get_openapi
+
+        openapi_schema = get_openapi(
+            title=self.app.title,
+            version=self.app.version,
+            description=self.app.description,
+            routes=self.app.routes,
+        )
+
+        # Use localhost instead of 0.0.0.0 for the schema URL
+        # 0.0.0.0 is a bind address, not a valid URL
+        if self.server_url:
+            server_url = self.server_url
+        else:
+            schema_host = "localhost" if host == "0.0.0.0" else host
+            server_url = f"http://{schema_host}:{port}"
+
+        openapi_schema["servers"] = [
+            {"url": server_url, "description": "Development server"}
+        ]
+
+        self.app.openapi_schema = openapi_schema
+        return openapi_schema
+
     def run(self, host: str = "0.0.0.0", port: int = 8000, **kwargs):
         """
         Run the FastAPI server.
@@ -183,6 +216,7 @@ class OpenAPIAdapter:
             port: Port to bind to
             **kwargs: Additional uvicorn arguments
         """
+        self.app.openapi = lambda: self._customize_openapi_schema(host, port)
         uvicorn.run(self.app, host=host, port=port, **kwargs)
 
 
@@ -200,10 +234,12 @@ def create_api_server_script(
     # Determine module path for import
     agent_module = agent_class.__module__
     if agent_module.startswith('aw_agents.'):
-        # Extract the submodule (e.g., 'download' from 'aw_agents.download.agent')
+        # Extract the submodule (e.g., 'agents.download' from 'aw_agents.agents.download.agent')
         parts = agent_module.split('.')
-        if len(parts) > 2:
-            import_module = '.'.join(parts[:2])  # aw_agents.download
+        if len(parts) > 3:
+            import_module = '.'.join(parts[:3])  # aw_agents.agents.download
+        elif len(parts) > 2:
+            import_module = '.'.join(parts[:2])  # aw_agents.agents
         else:
             import_module = agent_module
     else:

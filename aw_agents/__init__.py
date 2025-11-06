@@ -12,15 +12,17 @@ Adapters:
     - OpenAPIAdapter: For ChatGPT Custom GPTs (OpenAPI/FastAPI)
 
 Example:
-    >>> from aw_agents.download import DownloadAgent
+    >>> from aw_agents.agents.download import DownloadAgent
     >>> from aw_agents.adapters import MCPAdapter
-    >>> 
+    >>>
     >>> agent = DownloadAgent()
     >>> adapter = MCPAdapter(agent, "download-agent")
     >>> adapter.run()  # Serves agent via MCP for Claude
 """
 
 __version__ = "0.1.0"
+
+from aw_agents.util import AW_AGENTS_DATA_DIR, djoin
 
 # Core abstractions
 from aw_agents.base import AgentBase, ToolExecutionResult, create_json_schema
@@ -34,7 +36,7 @@ from aw_agents.adapters import (
 )
 
 # Agents
-from aw_agents.download import DownloadAgent
+from aw_agents.agents.download import DownloadAgent
 
 __all__ = [
     # Version

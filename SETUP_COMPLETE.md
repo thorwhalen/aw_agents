@@ -114,22 +114,23 @@ jupyter notebook aw_agents/download/demo_download_agent.ipynb
 ### 3. Deploy to Claude Desktop
 
 ```bash
-# Generate MCP server script
-python scripts/deploy_mcp.py DownloadAgent --output ~/mcp_download.py
+# Easiest way - automatic configuration:
+python -m aw_agents.agents.download.agent --mcp
 
-# Add to Claude config at:
-# ~/Library/Application Support/Claude/claude_desktop_config.json
+# Or generate MCP server script manually:
+python scripts/deploy_mcp.py DownloadAgent --output ~/mcp_download.py
 ```
 
-Config to add:
-```json
-{
-  "mcpServers": {
-    "download": {
-      "command": "python",
-      "args": ["/Users/thorwhalen/mcp_download.py"]
-    }
-  }
+The agent automatically adds itself to Claude Desktop config. Just restart Claude!
+
+**For manual configuration:**
+```python
+from aw.util import claude_desktop_config
+
+mcp = claude_desktop_config()
+mcp['download'] = {
+    'command': 'python',
+    'args': ['/absolute/path/to/mcp_download.py']
 }
 ```
 

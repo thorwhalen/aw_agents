@@ -140,10 +140,12 @@ def create_mcp_server_script(agent_class, server_name: str, output_path: Path):
     # Determine module path for import
     agent_module = agent_class.__module__
     if agent_module.startswith('aw_agents.'):
-        # Extract the submodule (e.g., 'download' from 'aw_agents.download.agent')
+        # Extract the submodule (e.g., 'agents.download' from 'aw_agents.agents.download.agent')
         parts = agent_module.split('.')
-        if len(parts) > 2:
-            import_module = '.'.join(parts[:2])  # aw_agents.download
+        if len(parts) > 3:
+            import_module = '.'.join(parts[:3])  # aw_agents.agents.download
+        elif len(parts) > 2:
+            import_module = '.'.join(parts[:2])  # aw_agents.agents
         else:
             import_module = agent_module
     else:

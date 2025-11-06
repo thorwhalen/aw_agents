@@ -27,11 +27,11 @@ def main():
     try:
         # Try different import patterns
         if args.agent_name == 'DownloadAgent':
-            from aw_agents.download import DownloadAgent as agent_class
+            from aw_agents.agents.download import DownloadAgent as agent_class
         else:
-            # Try to import from aw_agents
+            # Try to import from aw_agents.agents
             module_name = args.agent_name.lower().replace('agent', '')
-            module = importlib.import_module(f'aw_agents.{module_name}')
+            module = importlib.import_module(f'aw_agents.agents.{module_name}')
             agent_class = getattr(module, args.agent_name)
     except (ImportError, AttributeError) as e:
         print(f"Error: Could not import {args.agent_name}")

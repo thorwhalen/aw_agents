@@ -5,7 +5,7 @@ This example shows how to use the DownloadAgent directly in Python,
 and then how to deploy it to chatbot platforms.
 """
 
-from aw_agents.download import DownloadAgent
+from aw_agents.agents.download import DownloadAgent
 from aw_agents.adapters import MCPAdapter, OpenAPIAdapter
 
 
@@ -14,21 +14,24 @@ def example_direct_usage():
     print("=" * 60)
     print("Example 1: Direct Usage")
     print("=" * 60)
-    
+
     agent = DownloadAgent()
-    
+
     # List available tools
     print("\nAvailable tools:")
     for tool in agent.get_tools():
         print(f"  - {tool['name']}: {tool['description'][:60]}...")
-    
+
     # Execute a tool
     print("\nDownloading a file...")
-    result = agent.execute_tool('download_content', {
-        'url': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-        'context': 'Test PDF'
-    })
-    
+    result = agent.execute_tool(
+        'download_content',
+        {
+            'url': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+            'context': 'Test PDF',
+        },
+    )
+
     if result['success']:
         print(f"✓ {result['message']}")
         print(f"  Path: {result['data']['path']}")
@@ -41,12 +44,13 @@ def example_mcp_deployment():
     print("\n" + "=" * 60)
     print("Example 2: MCP Deployment (Claude)")
     print("=" * 60)
-    
+
     print("\nTo deploy to Claude Desktop:")
-    print("""
+    print(
+        """
 1. Create the MCP server:
    
-   from aw_agents.download import DownloadAgent
+   from aw_agents.agents.download import DownloadAgent
    from aw_agents.adapters import MCPAdapter
    
    agent = DownloadAgent()
@@ -69,7 +73,8 @@ def example_mcp_deployment():
    }
 
 4. Restart Claude Desktop
-""")
+"""
+    )
 
 
 def example_api_deployment():
@@ -77,12 +82,13 @@ def example_api_deployment():
     print("=" * 60)
     print("Example 3: API Deployment (ChatGPT)")
     print("=" * 60)
-    
+
     print("\nTo deploy to ChatGPT Custom GPT:")
-    print("""
+    print(
+        """
 1. Create and start the API server:
    
-   from aw_agents.download import DownloadAgent
+   from aw_agents.agents.download import DownloadAgent
    from aw_agents.adapters import OpenAPIAdapter
    
    agent = DownloadAgent()
@@ -101,7 +107,8 @@ def example_api_deployment():
 4. For remote access:
    - Use ngrok: ngrok http 8000
    - Or deploy to a cloud service
-""")
+"""
+    )
 
 
 def example_custom_agent():
@@ -109,8 +116,9 @@ def example_custom_agent():
     print("=" * 60)
     print("Example 4: Creating Your Own Agent")
     print("=" * 60)
-    
-    print("""
+
+    print(
+        """
 from aw_agents.base import AgentBase, ToolExecutionResult, create_json_schema
 
 class MyAgent(AgentBase):
@@ -141,7 +149,8 @@ adapter.run_sync()
 from aw_agents.adapters import OpenAPIAdapter
 adapter = OpenAPIAdapter(MyAgent())
 adapter.run(port=8001)
-""")
+"""
+    )
 
 
 if __name__ == '__main__':

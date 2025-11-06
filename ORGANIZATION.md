@@ -10,7 +10,7 @@ After considering various options, I recommend using a **monorepo package struct
 
 1. **Unified Management**: All agents in one place, easier to maintain
 2. **Shared Patterns**: Extract common code to base classes and adapters
-3. **Easy Imports**: `from aw_agents.download import DownloadAgent`
+3. **Easy Imports**: `from aw_agents.agents.download import DownloadAgent`
 4. **Flexible Distribution**: Can publish as one package or with optional features
 5. **Refactoring-Friendly**: Easy to extract patterns into the core `aw` package later
 
@@ -77,7 +77,7 @@ This keeps everything organized and makes it easy to:
 **Yes, absolutely.**
 
 Benefits:
-- Easy imports: `from aw_agents.download import DownloadAgent`
+- Easy imports: `from aw_agents.agents.download import DownloadAgent`
 - Can install locally: `pip install -e .`
 - Can publish to PyPI
 - Standard Python tooling works (pytest, mypy, etc.)
@@ -244,7 +244,7 @@ Phase 4: Extract to Core
 
 3. **Test it**:
    ```python
-   from aw_agents.download import DownloadAgent
+   from aw_agents.agents.download import DownloadAgent
    agent = DownloadAgent()
    # ... test it
    ```
