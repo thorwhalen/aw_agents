@@ -30,6 +30,26 @@ except ImportError:
     _ExtensionRouter = None
 
 
+# Extensions that should be treated as placeholders and replaced when better
+# information becomes available from response headers or sniffed bytes.
+PLACEHOLDER_EXTENSIONS = {'.bin', '.tmp', '.dat', '.download'}
+
+
+def _normalize_extension(extension: Optional[str]) -> Optional[str]:
+    """Return a cleaned extension or None if it's unusable."""
+
+    if not extension:
+        return None
+
+    if not extension.startswith('.'):
+        extension = f'.{extension}'
+
+    if extension.lower() in PLACEHOLDER_EXTENSIONS:
+        return None
+
+    return extension
+
+
 def _get_home_downloads() -> Path:
     """Get the system-independent Downloads folder."""
     return Path.home() / "Downloads"
@@ -185,6 +205,12 @@ def _handle_huggingface_url(url: str) -> str:
     return url
 
 
+def _remove_url_crap(url: str) -> str:
+    url = url.replace("?utm_source=chatgpt.com", "")
+    url = url.replace("&utm_source=chatgpt.com", "")
+    return url
+
+
 class DownloadEngine:
     """
     Core download engine with smart link handling and context-aware naming.
@@ -332,27 +358,118 @@ class DownloadEngine:
                     pass
 
             # Use router to detect extension
-            extension = self.extension_router(
-                url=url,
-                content=content,
-                content_type=content_type,
-                explicit_extension=explicit_extension,
+            extension = _normalize_extension(
+                self.extension_router(
+                    url=url,
+                    content=content,
+                    content_type=content_type,
+                    explicit_extension=explicit_extension,
+                )
             )
-        else:
-            # Fallback to old behavior
-            if response:
-                content_type = response.headers.get('content-type', '')
-                extension = _infer_extension_from_content_type(content_type)
 
-            if not extension:
-                url_ext = Path(urlparse(url).path).suffix
-                extension = url_ext if url_ext else '.bin'
+        if not extension and response:
+            content_type = response.headers.get('content-type', '')
+            extension = _normalize_extension(
+                _infer_extension_from_content_type(content_type)
+            )
+
+        if not extension:
+            url_ext = Path(urlparse(url).path).suffix
+            extension = _normalize_extension(url_ext) or '.bin'
 
         # Combine filename and extension
         if not filename.endswith(extension):
             filename = filename + extension
 
         return filename
+
+    def _detect_extension_from_response(
+        self,
+        url: str,
+        response: Optional[requests.Response],
+        *,
+        content_sample: bytes = b'',
+        explicit_extension: Optional[str] = None,
+    ) -> Optional[str]:
+        """Infer an extension from response metadata/content."""
+
+        if not response:
+            return None
+
+        content_type = response.headers.get('content-type', '')
+        extension = None
+
+        if self.extension_router:
+            try:
+                extension = _normalize_extension(
+                    self.extension_router(
+                        url=url,
+                        content=content_sample or b'',
+                        content_type=content_type,
+                        explicit_extension=explicit_extension,
+                    )
+                )
+            except Exception:
+                extension = None
+
+        if not extension and content_type:
+            extension = _normalize_extension(
+                _infer_extension_from_content_type(content_type)
+            )
+
+        if not extension:
+            url_ext = Path(urlparse(url).path).suffix
+            extension = _normalize_extension(url_ext)
+
+        return extension
+
+    def _ensure_extension_matches_content(
+        self,
+        filename: str,
+        *,
+        url: str,
+        response: Optional[requests.Response],
+        content_sample: bytes,
+        user_supplied: bool,
+    ) -> tuple[str, Optional[str]]:
+        """
+        Make sure the filename extension aligns with detected content type.
+
+        Returns the (maybe updated) filename and an optional warning message.
+        """
+
+        detected_extension = self._detect_extension_from_response(
+            url,
+            response,
+            content_sample=content_sample,
+        )
+
+        if not detected_extension:
+            return filename, None
+
+        if not detected_extension.startswith('.'):
+            detected_extension = f'.{detected_extension}'
+
+        current_ext = Path(filename).suffix
+        if current_ext.lower() == detected_extension.lower():
+            return filename, None
+
+        can_replace = (
+            not user_supplied
+            or not current_ext
+            or current_ext.lower() in PLACEHOLDER_EXTENSIONS
+        )
+
+        if not can_replace:
+            return filename, None
+
+        new_filename = f"{Path(filename).stem}{detected_extension}"
+        content_type = response.headers.get('content-type') if response else None
+        warning = (
+            "Adjusted filename extension to match detected content type"
+            f" ({content_type or 'unknown'}): {filename} -> {new_filename}"
+        )
+        return new_filename, warning
 
     def download(
         self,
@@ -385,6 +502,8 @@ class DownloadEngine:
             >>> # result = engine.download("https://example.com/paper.pdf", context="ML Paper")
             >>> # print(result['path'])
         """
+        url = _remove_url_crap(url)
+
         warnings = []
 
         # Resolve actual download URL
@@ -401,6 +520,7 @@ class DownloadEngine:
         my_graze = partial(graze, rootdir=cache_dir)
 
         # Generate filename if not provided
+        user_provided_filename = filename is not None
         if not filename:
             # Need to make a request to get headers for filename generation
             try:
@@ -418,9 +538,27 @@ class DownloadEngine:
             response = self.session.get(final_url, timeout=self.timeout, stream=True)
             response.raise_for_status()
 
+            chunk_iter = response.iter_content(chunk_size=8192)
+            first_chunk = next(chunk_iter, b'')
+
+            filename, extension_warning = self._ensure_extension_matches_content(
+                filename,
+                url=final_url,
+                response=response,
+                content_sample=first_chunk,
+                user_supplied=user_provided_filename,
+            )
+            if extension_warning:
+                warnings.append(extension_warning)
+
+            file_path = target_dir / filename
+
             with open(file_path, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    f.write(chunk)
+                if first_chunk:
+                    f.write(first_chunk)
+                for chunk in chunk_iter:
+                    if chunk:
+                        f.write(chunk)
 
             metadata = {
                 'content_type': response.headers.get('content-type'),
