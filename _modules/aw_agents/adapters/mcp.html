@@ -1,0 +1,314 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aw_agents.adapters.mcp &mdash; aw_agents 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=a58bc63e"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            aw_agents
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/aw_agents.html">aw_agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/aw_agents/adapters.html">aw_agents.adapters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/aw_agents/adapters/mcp.html">aw_agents.adapters.mcp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/aw_agents/adapters/openapi.html">aw_agents.adapters.openapi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/aw_agents/agents.html">aw_agents.agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/aw_agents/agents/download.html">aw_agents.agents.download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/aw_agents/agents/download/agent.html">aw_agents.agents.download.agent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/aw_agents/agents/download/download_core.html">aw_agents.agents.download.download_core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/aw_agents/base.html">aw_agents.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/aw_agents/util.html">aw_agents.util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">aw_agents</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">aw_agents.adapters.mcp</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aw_agents.adapters.mcp</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">MCP (Model Context Protocol) adapter for AW agents.</span>
+
+<span class="sd">This adapter wraps any AgentBase subclass to expose it as an MCP server</span>
+<span class="sd">for use with Claude Desktop.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mcp.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">Server</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mcp.server.stdio</span><span class="w"> </span><span class="kn">import</span> <span class="n">stdio_server</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mcp.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tool</span><span class="p">,</span> <span class="n">TextContent</span>
+
+    <span class="n">MCP_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">MCP_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: mcp package not installed. Install with: pip install mcp&quot;</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">aw_agents.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentBase</span>
+
+
+<div class="viewcode-block" id="MCPAdapter">
+<a class="viewcode-back" href="../../../module_docs/aw_agents/adapters/mcp.html#aw_agents.MCPAdapter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MCPAdapter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adapter to expose an AgentBase as an MCP server.</span>
+
+<span class="sd">    Usage:</span>
+<span class="sd">        agent = YourAgent()</span>
+<span class="sd">        adapter = MCPAdapter(agent, server_name=&quot;your-agent&quot;)</span>
+<span class="sd">        adapter.run()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent</span><span class="p">:</span> <span class="n">AgentBase</span><span class="p">,</span> <span class="n">server_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize MCP adapter.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            agent: Agent instance to wrap</span>
+<span class="sd">            server_name: Name for the MCP server</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">MCP_AVAILABLE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;mcp package required. Install with: pip install mcp&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent</span> <span class="o">=</span> <span class="n">agent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">server_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_handlers</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up MCP server handlers.&quot;&quot;&quot;</span>
+
+        <span class="nd">@self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">list_tools</span><span class="p">()</span>
+        <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">list_tools</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Tool</span><span class="p">]:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;List available tools from the agent.&quot;&quot;&quot;</span>
+            <span class="n">agent_tools</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">get_tools</span><span class="p">()</span>
+
+            <span class="n">mcp_tools</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">agent_tools</span><span class="p">:</span>
+                <span class="n">mcp_tools</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">Tool</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">tool</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                        <span class="n">description</span><span class="o">=</span><span class="n">tool</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                        <span class="n">inputSchema</span><span class="o">=</span><span class="n">tool</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">],</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">mcp_tools</span>
+
+        <span class="nd">@self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">call_tool</span><span class="p">()</span>
+        <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">call_tool</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">TextContent</span><span class="p">]:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Handle tool calls from Claude.&quot;&quot;&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">execute_tool</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">arguments</span><span class="p">)</span>
+
+                <span class="c1"># Format response based on result</span>
+                <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]:</span>
+                    <span class="n">response_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_success_response</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">response_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_error_response</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">response_text</span><span class="p">)]</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span>
+                    <span class="n">TextContent</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;❌ Error executing </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_success_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format a successful tool execution response.&quot;&quot;&quot;</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">):</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;✓ Operation completed successfully&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Add data if present</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">):</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]))</span>
+
+        <span class="c1"># Add warnings if present</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;warnings&#39;</span><span class="p">):</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Warnings:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">warning</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;warnings&#39;</span><span class="p">]:</span>
+                <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  • </span><span class="si">{</span><span class="n">warning</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_error_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format an error response.&quot;&quot;&quot;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="s1">&#39;Unknown error&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;❌ Error: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<div class="viewcode-block" id="MCPAdapter.run">
+<a class="viewcode-back" href="../../../module_docs/aw_agents/adapters/mcp.html#aw_agents.MCPAdapter.run">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the MCP server.&quot;&quot;&quot;</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">stdio_server</span><span class="p">()</span> <span class="k">as</span> <span class="p">(</span><span class="n">read_stream</span><span class="p">,</span> <span class="n">write_stream</span><span class="p">):</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="n">read_stream</span><span class="p">,</span> <span class="n">write_stream</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">create_initialization_options</span><span class="p">()</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MCPAdapter.run_sync">
+<a class="viewcode-back" href="../../../module_docs/aw_agents/adapters/mcp.html#aw_agents.MCPAdapter.run_sync">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the MCP server (synchronous wrapper).&quot;&quot;&quot;</span>
+        <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">())</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="create_mcp_server_script">
+<a class="viewcode-back" href="../../../module_docs/aw_agents/adapters/mcp.html#aw_agents.create_mcp_server_script">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_mcp_server_script</span><span class="p">(</span><span class="n">agent_class</span><span class="p">,</span> <span class="n">server_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate an MCP server script for an agent.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        agent_class: Agent class to wrap</span>
+<span class="sd">        server_name: Name for the MCP server</span>
+<span class="sd">        output_path: Path to write the script</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Determine module path for import</span>
+    <span class="n">agent_module</span> <span class="o">=</span> <span class="n">agent_class</span><span class="o">.</span><span class="vm">__module__</span>
+    <span class="k">if</span> <span class="n">agent_module</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;aw_agents.&#39;</span><span class="p">):</span>
+        <span class="c1"># Extract the submodule (e.g., &#39;agents.download&#39; from &#39;aw_agents.agents.download.agent&#39;)</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">agent_module</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">import_module</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>  <span class="c1"># aw_agents.agents.download</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">import_module</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># aw_agents.agents</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">import_module</span> <span class="o">=</span> <span class="n">agent_module</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">import_module</span> <span class="o">=</span> <span class="n">agent_module</span>
+
+    <span class="n">script_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;&quot;&quot;&quot;</span>
+<span class="s1">MCP Server for </span><span class="si">{</span><span class="n">agent_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span>
+
+<span class="s1">Auto-generated MCP server script.</span>
+
+<span class="s1">To use with Claude Desktop, add to your config:</span>
+<span class="se">{{</span>
+<span class="s1">  &quot;mcpServers&quot;: </span><span class="se">{{</span>
+<span class="s1">    &quot;</span><span class="si">{</span><span class="n">server_name</span><span class="si">}</span><span class="s1">&quot;: </span><span class="se">{{</span>
+<span class="s1">      &quot;command&quot;: &quot;python&quot;,</span>
+<span class="s1">      &quot;args&quot;: [&quot;</span><span class="si">{</span><span class="n">output_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s1">&quot;]</span>
+<span class="s1">    </span><span class="se">}}</span>
+<span class="s1">  </span><span class="se">}}</span>
+<span class="se">}}</span>
+<span class="s1">&quot;&quot;&quot;</span>
+
+<span class="s1">from aw_agents.adapters.mcp import MCPAdapter</span>
+<span class="s1">from </span><span class="si">{</span><span class="n">import_module</span><span class="si">}</span><span class="s1"> import </span><span class="si">{</span><span class="n">agent_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span>
+
+
+<span class="s1">def main():</span>
+<span class="s1">    agent = </span><span class="si">{</span><span class="n">agent_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">()</span>
+<span class="s1">    adapter = MCPAdapter(agent, &quot;</span><span class="si">{</span><span class="n">server_name</span><span class="si">}</span><span class="s1">&quot;)</span>
+<span class="s1">    adapter.run_sync()</span>
+
+
+<span class="s1">if __name__ == &quot;__main__&quot;:</span>
+<span class="s1">    main()</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+    <span class="n">output_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">script_content</span><span class="p">)</span>
+    <span class="n">output_path</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="mo">0o755</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output_path</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

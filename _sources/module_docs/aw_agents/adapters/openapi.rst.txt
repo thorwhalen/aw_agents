@@ -1,0 +1,4 @@
+aw_agents.adapters.openapi
+==========================
+.. automodule:: aw_agents.adapters.openapi
+   :members:

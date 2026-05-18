@@ -1,0 +1,397 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aw_agents &mdash; aw_agents 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=a58bc63e"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="aw_agents.adapters" href="aw_agents/adapters.html" />
+    <link rel="prev" title="Welcome to aw_agents’s documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            aw_agents
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">aw_agents</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#aw_agents.AgentBase"><code class="docutils literal notranslate"><span class="pre">AgentBase</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aw_agents.AgentBase.execute_tool"><code class="docutils literal notranslate"><span class="pre">AgentBase.execute_tool()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aw_agents.AgentBase.get_metadata"><code class="docutils literal notranslate"><span class="pre">AgentBase.get_metadata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aw_agents.AgentBase.get_tools"><code class="docutils literal notranslate"><span class="pre">AgentBase.get_tools()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aw_agents.DownloadAgent"><code class="docutils literal notranslate"><span class="pre">DownloadAgent</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aw_agents.DownloadAgent.execute_tool"><code class="docutils literal notranslate"><span class="pre">DownloadAgent.execute_tool()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aw_agents.DownloadAgent.get_metadata"><code class="docutils literal notranslate"><span class="pre">DownloadAgent.get_metadata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aw_agents.DownloadAgent.get_tools"><code class="docutils literal notranslate"><span class="pre">DownloadAgent.get_tools()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aw_agents.MCPAdapter"><code class="docutils literal notranslate"><span class="pre">MCPAdapter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aw_agents.MCPAdapter.run"><code class="docutils literal notranslate"><span class="pre">MCPAdapter.run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aw_agents.MCPAdapter.run_sync"><code class="docutils literal notranslate"><span class="pre">MCPAdapter.run_sync()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aw_agents.OpenAPIAdapter"><code class="docutils literal notranslate"><span class="pre">OpenAPIAdapter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aw_agents.OpenAPIAdapter.run"><code class="docutils literal notranslate"><span class="pre">OpenAPIAdapter.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aw_agents.ToolExecutionResult"><code class="docutils literal notranslate"><span class="pre">ToolExecutionResult</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aw_agents.ToolExecutionResult.error_result"><code class="docutils literal notranslate"><span class="pre">ToolExecutionResult.error_result()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aw_agents.ToolExecutionResult.success_result"><code class="docutils literal notranslate"><span class="pre">ToolExecutionResult.success_result()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aw_agents.ToolExecutionResult.to_dict"><code class="docutils literal notranslate"><span class="pre">ToolExecutionResult.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aw_agents.create_api_server_script"><code class="docutils literal notranslate"><span class="pre">create_api_server_script()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aw_agents.create_json_schema"><code class="docutils literal notranslate"><span class="pre">create_json_schema()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aw_agents.create_mcp_server_script"><code class="docutils literal notranslate"><span class="pre">create_mcp_server_script()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="aw_agents/adapters.html">aw_agents.adapters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aw_agents/adapters/mcp.html">aw_agents.adapters.mcp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aw_agents/adapters/openapi.html">aw_agents.adapters.openapi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aw_agents/agents.html">aw_agents.agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aw_agents/agents/download.html">aw_agents.agents.download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aw_agents/agents/download/agent.html">aw_agents.agents.download.agent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aw_agents/agents/download/download_core.html">aw_agents.agents.download.download_core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aw_agents/base.html">aw_agents.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aw_agents/util.html">aw_agents.util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">aw_agents</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">aw_agents</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/module_docs/aw_agents.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-aw_agents">
+<span id="aw-agents"></span><h1>aw_agents<a class="headerlink" href="#module-aw_agents" title="Link to this heading"></a></h1>
+<p>aw_agents - AI Agents for Agentic Workflows</p>
+<p>A collection of AI agents that can be easily deployed to multiple chatbot
+platforms (Claude, ChatGPT, etc.) through adapters.</p>
+<dl class="simple">
+<dt>Agents:</dt><dd><ul class="simple">
+<li><p>DownloadAgent: Smart content downloader with context-aware naming</p></li>
+</ul>
+</dd>
+<dt>Adapters:</dt><dd><ul class="simple">
+<li><p>MCPAdapter: For Claude Desktop (MCP protocol)</p></li>
+<li><p>OpenAPIAdapter: For ChatGPT Custom GPTs (OpenAPI/FastAPI)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">aw_agents.agents.download</span><span class="w"> </span><span class="kn">import</span> <span class="n">DownloadAgent</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">aw_agents.adapters</span><span class="w"> </span><span class="kn">import</span> <span class="n">MCPAdapter</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">agent</span> <span class="o">=</span> <span class="n">DownloadAgent</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">adapter</span> <span class="o">=</span> <span class="n">MCPAdapter</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="s2">&quot;download-agent&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">adapter</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>  <span class="c1"># Serves agent via MCP for Claude</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="aw_agents.AgentBase">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">aw_agents.</span></span><span class="sig-name descname"><span class="pre">AgentBase</span></span><a class="reference internal" href="../_modules/aw_agents/base.html#AgentBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.AgentBase" title="Link to this definition"></a></dt>
+<dd><p>Base class for all AW agents.</p>
+<p>Agents should inherit from this and implement the core methods.
+Adapters (MCP, OpenAPI) will wrap these agents for deployment.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="aw_agents.AgentBase.execute_tool">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">execute_tool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arguments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/aw_agents/base.html#AgentBase.execute_tool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.AgentBase.execute_tool" title="Link to this definition"></a></dt>
+<dd><p>Execute a tool with given arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Tool name</p></li>
+<li><p><strong>arguments</strong> – Tool arguments</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>success: bool</p></li>
+<li><p>data: Any</p></li>
+<li><p>message: Optional[str]</p></li>
+<li><p>warnings: Optional[list[str]]</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Result dictionary with at least</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aw_agents.AgentBase.get_metadata">
+<span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/aw_agents/base.html#AgentBase.get_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.AgentBase.get_metadata" title="Link to this definition"></a></dt>
+<dd><p>Get agent metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Metadata including name, version, description</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aw_agents.AgentBase.get_tools">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_tools</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/aw_agents/base.html#AgentBase.get_tools"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.AgentBase.get_tools" title="Link to this definition"></a></dt>
+<dd><p>Return tool definitions for this agent.</p>
+<p>Each tool should have:
+- name: str
+- description: str
+- parameters: dict (JSON schema)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of tool definitions</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="aw_agents.DownloadAgent">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">aw_agents.</span></span><span class="sig-name descname"><span class="pre">DownloadAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_download_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aw_agents/agents/download/agent.html#DownloadAgent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.DownloadAgent" title="Link to this definition"></a></dt>
+<dd><p>Smart download agent with context-aware naming and intelligent link handling.</p>
+<p>Features:
+- Detects landing pages and finds actual download links
+- Special handling for GitHub, HuggingFace, Kaggle
+- Context-aware file naming
+- Multiple content type support</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">agent</span> <span class="o">=</span> <span class="n">DownloadAgent</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tools</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">get_tools</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">tools</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="aw_agents.DownloadAgent.execute_tool">
+<span class="sig-name descname"><span class="pre">execute_tool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arguments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/aw_agents/agents/download/agent.html#DownloadAgent.execute_tool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.DownloadAgent.execute_tool" title="Link to this definition"></a></dt>
+<dd><p>Execute a tool with given arguments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aw_agents.DownloadAgent.get_metadata">
+<span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/aw_agents/agents/download/agent.html#DownloadAgent.get_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.DownloadAgent.get_metadata" title="Link to this definition"></a></dt>
+<dd><p>Get agent metadata.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aw_agents.DownloadAgent.get_tools">
+<span class="sig-name descname"><span class="pre">get_tools</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/aw_agents/agents/download/agent.html#DownloadAgent.get_tools"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.DownloadAgent.get_tools" title="Link to this definition"></a></dt>
+<dd><p>Return tool definitions for this agent.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="aw_agents.MCPAdapter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">aw_agents.</span></span><span class="sig-name descname"><span class="pre">MCPAdapter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="aw_agents/base.html#aw_agents.base.AgentBase" title="aw_agents.base.AgentBase"><span class="pre">AgentBase</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aw_agents/adapters/mcp.html#MCPAdapter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.MCPAdapter" title="Link to this definition"></a></dt>
+<dd><p>Adapter to expose an AgentBase as an MCP server.</p>
+<dl class="simple">
+<dt>Usage:</dt><dd><p>agent = YourAgent()
+adapter = MCPAdapter(agent, server_name=”your-agent”)
+adapter.run()</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="aw_agents.MCPAdapter.run">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aw_agents/adapters/mcp.html#MCPAdapter.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.MCPAdapter.run" title="Link to this definition"></a></dt>
+<dd><p>Run the MCP server.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aw_agents.MCPAdapter.run_sync">
+<span class="sig-name descname"><span class="pre">run_sync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aw_agents/adapters/mcp.html#MCPAdapter.run_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.MCPAdapter.run_sync" title="Link to this definition"></a></dt>
+<dd><p>Run the MCP server (synchronous wrapper).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="aw_agents.OpenAPIAdapter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">aw_agents.</span></span><span class="sig-name descname"><span class="pre">OpenAPIAdapter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="aw_agents/base.html#aw_agents.base.AgentBase" title="aw_agents.base.AgentBase"><span class="pre">AgentBase</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'AI</span> <span class="pre">Agent</span> <span class="pre">API'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'AI</span> <span class="pre">Agent</span> <span class="pre">exposed</span> <span class="pre">via</span> <span class="pre">OpenAPI'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1.0.0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aw_agents/adapters/openapi.html#OpenAPIAdapter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.OpenAPIAdapter" title="Link to this definition"></a></dt>
+<dd><p>Adapter to expose an AgentBase as a FastAPI/OpenAPI service.</p>
+<dl class="simple">
+<dt>Usage:</dt><dd><p>agent = YourAgent()
+adapter = OpenAPIAdapter(agent, title=”Your Agent API”)
+adapter.run(port=8000)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="aw_agents.OpenAPIAdapter.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'0.0.0.0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8000</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aw_agents/adapters/openapi.html#OpenAPIAdapter.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.OpenAPIAdapter.run" title="Link to this definition"></a></dt>
+<dd><p>Run the FastAPI server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>host</strong> – Host to bind to</p></li>
+<li><p><strong>port</strong> – Port to bind to</p></li>
+<li><p><strong>**kwargs</strong> – Additional uvicorn arguments</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="aw_agents.ToolExecutionResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">aw_agents.</span></span><span class="sig-name descname"><span class="pre">ToolExecutionResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">success</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warnings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aw_agents/base.html#ToolExecutionResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.ToolExecutionResult" title="Link to this definition"></a></dt>
+<dd><p>Standard result format for tool execution.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="aw_agents.ToolExecutionResult.error_result">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">error_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="aw_agents/base.html#aw_agents.base.ToolExecutionResult" title="aw_agents.base.ToolExecutionResult"><span class="pre">ToolExecutionResult</span></a></span></span><a class="reference internal" href="../_modules/aw_agents/base.html#ToolExecutionResult.error_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.ToolExecutionResult.error_result" title="Link to this definition"></a></dt>
+<dd><p>Create an error result.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aw_agents.ToolExecutionResult.success_result">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">success_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="aw_agents/base.html#aw_agents.base.ToolExecutionResult" title="aw_agents.base.ToolExecutionResult"><span class="pre">ToolExecutionResult</span></a></span></span><a class="reference internal" href="../_modules/aw_agents/base.html#ToolExecutionResult.success_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.ToolExecutionResult.success_result" title="Link to this definition"></a></dt>
+<dd><p>Create a success result.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aw_agents.ToolExecutionResult.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/aw_agents/base.html#ToolExecutionResult.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.ToolExecutionResult.to_dict" title="Link to this definition"></a></dt>
+<dd><p>Convert to dictionary format.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aw_agents.create_api_server_script">
+<span class="sig-prename descclassname"><span class="pre">aw_agents.</span></span><span class="sig-name descname"><span class="pre">create_api_server_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agent_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aw_agents/adapters/openapi.html#create_api_server_script"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.create_api_server_script" title="Link to this definition"></a></dt>
+<dd><p>Generate an API server script for an agent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>agent_class</strong> – Agent class to wrap</p></li>
+<li><p><strong>output_path</strong> – Path to write the script</p></li>
+<li><p><strong>default_port</strong> – Default port for the server</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aw_agents.create_json_schema">
+<span class="sig-prename descclassname"><span class="pre">aw_agents.</span></span><span class="sig-name descname"><span class="pre">create_json_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/aw_agents/base.html#create_json_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.create_json_schema" title="Link to this definition"></a></dt>
+<dd><p>Helper to create JSON schema for tool parameters.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema</span> <span class="o">=</span> <span class="n">create_json_schema</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">properties</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;URL to process&#39;</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="s1">&#39;context&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Context info&#39;</span><span class="p">}</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span>    <span class="n">required</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">schema</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+<span class="go">&#39;object&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;url&#39;</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;required&#39;</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aw_agents.create_mcp_server_script">
+<span class="sig-prename descclassname"><span class="pre">aw_agents.</span></span><span class="sig-name descname"><span class="pre">create_mcp_server_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agent_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aw_agents/adapters/mcp.html#create_mcp_server_script"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aw_agents.create_mcp_server_script" title="Link to this definition"></a></dt>
+<dd><p>Generate an MCP server script for an agent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>agent_class</strong> – Agent class to wrap</p></li>
+<li><p><strong>server_name</strong> – Name for the MCP server</p></li>
+<li><p><strong>output_path</strong> – Path to write the script</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to aw_agents’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="aw_agents/adapters.html" class="btn btn-neutral float-right" title="aw_agents.adapters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

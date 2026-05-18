@@ -1,0 +1,763 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aw_agents.agents.download.download_core &mdash; aw_agents 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=a58bc63e"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            aw_agents
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_docs/aw_agents.html">aw_agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_docs/aw_agents/adapters.html">aw_agents.adapters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_docs/aw_agents/adapters/mcp.html">aw_agents.adapters.mcp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_docs/aw_agents/adapters/openapi.html">aw_agents.adapters.openapi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_docs/aw_agents/agents.html">aw_agents.agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_docs/aw_agents/agents/download.html">aw_agents.agents.download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_docs/aw_agents/agents/download/agent.html">aw_agents.agents.download.agent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_docs/aw_agents/agents/download/download_core.html">aw_agents.agents.download.download_core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_docs/aw_agents/base.html">aw_agents.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_docs/aw_agents/util.html">aw_agents.util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">aw_agents</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">aw_agents.agents.download.download_core</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aw_agents.agents.download.download_core</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Download Agent: Smart content downloader with context-aware naming and intelligent link handling.</span>
+
+<span class="sd">This agent can download content from URLs with special handling for:</span>
+<span class="sd">- Indirect download links (landing pages with actual download links)</span>
+<span class="sd">- Scientific papers (PDFs from various sources)</span>
+<span class="sd">- Data from HuggingFace, Kaggle, GitHub</span>
+<span class="sd">- Context-aware file naming based on conversation context</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span><span class="p">,</span> <span class="n">urljoin</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">mimetypes</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bs4</span><span class="w"> </span><span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">graze</span><span class="w"> </span><span class="kn">import</span> <span class="n">graze</span>
+
+<span class="c1"># Import routing from aw package</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">aw.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtensionRouter</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">aw.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtensionRouter</span> <span class="k">as</span> <span class="n">_ExtensionRouter</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c1"># Fallback if aw.routing not available</span>
+    <span class="n">_ExtensionRouter</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="c1"># Extensions that should be treated as placeholders and replaced when better</span>
+<span class="c1"># information becomes available from response headers or sniffed bytes.</span>
+<span class="n">PLACEHOLDER_EXTENSIONS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;.bin&#39;</span><span class="p">,</span> <span class="s1">&#39;.tmp&#39;</span><span class="p">,</span> <span class="s1">&#39;.dat&#39;</span><span class="p">,</span> <span class="s1">&#39;.download&#39;</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalize_extension</span><span class="p">(</span><span class="n">extension</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a cleaned extension or None if it&#39;s unusable.&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">extension</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">extension</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+        <span class="n">extension</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;.</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="k">if</span> <span class="n">extension</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">PLACEHOLDER_EXTENSIONS</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">extension</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_home_downloads</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the system-independent Downloads folder.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;Downloads&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_sanitize_filename</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sanitize a string to be a valid filename.</span>
+
+<span class="sd">    &gt;&gt;&gt; _sanitize_filename(&quot;My Document&quot;)</span>
+<span class="sd">    &#39;My_Document&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Replace invalid characters with underscores</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[&lt;&gt;:&quot;/</span><span class="se">\\</span><span class="s1">|?*]&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="c1"># Replace multiple spaces/underscores with single underscore</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[\s_]+&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="c1"># Remove leading/trailing underscores</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+    <span class="c1"># Limit length</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_length</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[:</span><span class="n">max_length</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">name</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_infer_extension_from_content_type</span><span class="p">(</span><span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Infer file extension from content type.</span>
+
+<span class="sd">    &gt;&gt;&gt; _infer_extension_from_content_type(&#39;application/pdf&#39;)</span>
+<span class="sd">    &#39;.pdf&#39;</span>
+<span class="sd">    &gt;&gt;&gt; _infer_extension_from_content_type(&#39;text/html&#39;)</span>
+<span class="sd">    &#39;.html&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">guess_extension</span><span class="p">(</span><span class="n">content_type</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">ext</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_likely_landing_page</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if response is likely a landing page rather than direct content.</span>
+
+<span class="sd">    Returns True if:</span>
+<span class="sd">    - Content type is HTML</span>
+<span class="sd">    - Content is relatively small (&lt; 1MB)</span>
+<span class="sd">    - Contains common download link patterns</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">content_type</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="s1">&#39;text/html&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">content_type</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># If HTML is very large, it&#39;s probably the actual content</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1_000_000</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Look for download link patterns</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Common patterns for download links</span>
+    <span class="n">download_patterns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;download&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;get file&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;direct link&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;pdf&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;.zip&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;.tar&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;.csv&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;.json&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Check links and buttons</span>
+    <span class="n">links</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;button&#39;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">href</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">pattern</span> <span class="ow">in</span> <span class="n">text</span> <span class="ow">or</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">href</span> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">download_patterns</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_find_download_link</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Try to find the actual download link from a landing page.</span>
+
+<span class="sd">    Returns the most likely download URL, or None if not found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Priority patterns for download links</span>
+    <span class="n">priority_patterns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.pdf$&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>  <span class="c1"># Direct PDF links</span>
+        <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;download&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+        <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.zip$&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
+        <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.tar\.gz$&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
+        <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.csv$&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.json$&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;/raw/&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>  <span class="c1"># GitHub raw links</span>
+        <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;/blob/&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>  <span class="c1"># GitHub blob (need to convert to raw)</span>
+    <span class="p">]</span>
+
+    <span class="n">candidates</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">href</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="c1"># Make absolute URL</span>
+        <span class="n">abs_url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">href</span><span class="p">)</span>
+
+        <span class="c1"># Score this link</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">points</span> <span class="ow">in</span> <span class="n">priority_patterns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">abs_url</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="ow">or</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+                <span class="n">score</span> <span class="o">+=</span> <span class="n">points</span>
+
+        <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">candidates</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">score</span><span class="p">,</span> <span class="n">abs_url</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">candidates</span><span class="p">:</span>
+        <span class="c1"># Return highest scoring candidate</span>
+        <span class="n">candidates</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_handle_github_url</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert GitHub blob URLs to raw URLs for direct download.</span>
+
+<span class="sd">    &gt;&gt;&gt; _handle_github_url(&#39;https://github.com/user/repo/blob/main/file.pdf&#39;)</span>
+<span class="sd">    &#39;https://raw.githubusercontent.com/user/repo/main/file.pdf&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39;github.com&#39;</span> <span class="ow">in</span> <span class="n">url</span> <span class="ow">and</span> <span class="s1">&#39;/blob/&#39;</span> <span class="ow">in</span> <span class="n">url</span><span class="p">:</span>
+        <span class="c1"># Convert blob to raw</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;github.com&#39;</span><span class="p">,</span> <span class="s1">&#39;raw.githubusercontent.com&#39;</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/blob/&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">url</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_handle_huggingface_url</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ensure HuggingFace URLs point to direct download.</span>
+
+<span class="sd">    &gt;&gt;&gt; _handle_huggingface_url(&#39;https://huggingface.co/datasets/user/dataset/blob/main/data.csv&#39;)</span>
+<span class="sd">    &#39;https://huggingface.co/datasets/user/dataset/resolve/main/data.csv&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39;huggingface.co&#39;</span> <span class="ow">in</span> <span class="n">url</span> <span class="ow">and</span> <span class="s1">&#39;/blob/&#39;</span> <span class="ow">in</span> <span class="n">url</span><span class="p">:</span>
+        <span class="c1"># Convert blob to resolve for direct download</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/blob/&#39;</span><span class="p">,</span> <span class="s1">&#39;/resolve/&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">url</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_remove_url_crap</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;?utm_source=chatgpt.com&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&amp;utm_source=chatgpt.com&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">url</span>
+
+
+<div class="viewcode-block" id="DownloadEngine">
+<a class="viewcode-back" href="../../../../module_docs/aw_agents/agents/download/download_core.html#aw_agents.agents.download.DownloadEngine">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DownloadEngine</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Core download engine with smart link handling and context-aware naming.</span>
+
+<span class="sd">    &gt;&gt;&gt; engine = DownloadEngine()</span>
+<span class="sd">    &gt;&gt;&gt; # engine.download(&quot;https://example.com/paper.pdf&quot;, context=&quot;Important ML Paper&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">default_download_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">user_agent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;DownloadAgent/1.0&quot;</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+        <span class="n">max_redirects</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">extension_router</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;ExtensionRouter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the download agent.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            default_download_dir: Default directory for downloads (default: ~/Downloads)</span>
+<span class="sd">            user_agent: User agent string for HTTP requests</span>
+<span class="sd">            timeout: Request timeout in seconds</span>
+<span class="sd">            max_redirects: Maximum number of redirects to follow</span>
+<span class="sd">            extension_router: Custom extension router (uses default if None)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_download_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">default_download_dir</span> <span class="ow">or</span> <span class="n">_get_home_downloads</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_agent</span> <span class="o">=</span> <span class="n">user_agent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_redirects</span> <span class="o">=</span> <span class="n">max_redirects</span>
+
+        <span class="c1"># Initialize extension router</span>
+        <span class="k">if</span> <span class="n">_ExtensionRouter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extension_router</span> <span class="o">=</span> <span class="n">extension_router</span> <span class="ow">or</span> <span class="n">_ExtensionRouter</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Fallback to old behavior if aw.routing not available</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extension_router</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Session for requests</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="n">user_agent</span><span class="p">})</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_download_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resolve the actual download URL, handling landing pages.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (download_url, warning_message)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Handle special domains</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">_handle_github_url</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">_handle_huggingface_url</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="c1"># Make initial request</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">head</span><span class="p">(</span>
+                <span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+
+            <span class="c1"># If HEAD doesn&#39;t work, try GET with streaming</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">&gt;=</span> <span class="mi">400</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">url</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Warning: Could not verify URL (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">). Will attempt download anyway.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Check if this is a landing page</span>
+        <span class="k">if</span> <span class="n">_is_likely_landing_page</span><span class="p">(</span><span class="n">response</span><span class="p">):</span>
+            <span class="c1"># Try to find actual download link</span>
+            <span class="n">actual_url</span> <span class="o">=</span> <span class="n">_find_download_link</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">actual_url</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span>
+                    <span class="n">actual_url</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;Detected landing page, found download link: </span><span class="si">{</span><span class="n">actual_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span>
+                    <span class="n">url</span><span class="p">,</span>
+                    <span class="s2">&quot;Warning: This appears to be a landing page, but couldn&#39;t find download link. Please verify.&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">url</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_filename</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">response</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">explicit_extension</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a good filename based on context and URL.</span>
+
+<span class="sd">        Priority:</span>
+<span class="sd">        1. Context provided by user</span>
+<span class="sd">        2. Content-Disposition header</span>
+<span class="sd">        3. URL path</span>
+<span class="sd">        4. Fallback to URL-based name</span>
+
+<span class="sd">        Extension detection uses ExtensionRouter (if available) for smart routing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">extension</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Try Content-Disposition header first (may have complete filename)</span>
+        <span class="k">if</span> <span class="n">response</span><span class="p">:</span>
+            <span class="n">content_disp</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-disposition&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;filename=&#39;</span> <span class="ow">in</span> <span class="n">content_disp</span><span class="p">:</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;filename=&quot;?([^&quot;]+)&quot;?&#39;</span><span class="p">,</span> <span class="n">content_disp</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="c1"># If Content-Disposition provides complete filename, use it</span>
+                    <span class="k">return</span> <span class="n">filename</span>
+
+        <span class="c1"># Use context if provided</span>
+        <span class="k">if</span> <span class="n">context</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">_sanitize_filename</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># Fall back to URL path</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span> <span class="ow">or</span> <span class="s1">&#39;download&#39;</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">_sanitize_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="c1"># Determine extension using router</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension_router</span><span class="p">:</span>
+            <span class="c1"># Gather context for routing</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+            <span class="n">content_type</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+            <span class="k">if</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">content_type</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="c1"># Try to read first chunk for magic byte detection</span>
+                <span class="c1"># (only if we have response content available)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="s1">&#39;content&#39;</span><span class="p">):</span>
+                        <span class="n">content</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">[:</span><span class="mi">100</span><span class="p">]</span>  <span class="c1"># First 100 bytes</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+            <span class="c1"># Use router to detect extension</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="n">_normalize_extension</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">extension_router</span><span class="p">(</span>
+                    <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span>
+                    <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span>
+                    <span class="n">content_type</span><span class="o">=</span><span class="n">content_type</span><span class="p">,</span>
+                    <span class="n">explicit_extension</span><span class="o">=</span><span class="n">explicit_extension</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">extension</span> <span class="ow">and</span> <span class="n">response</span><span class="p">:</span>
+            <span class="n">content_type</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="n">_normalize_extension</span><span class="p">(</span>
+                <span class="n">_infer_extension_from_content_type</span><span class="p">(</span><span class="n">content_type</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">extension</span><span class="p">:</span>
+            <span class="n">url_ext</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="n">_normalize_extension</span><span class="p">(</span><span class="n">url_ext</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;.bin&#39;</span>
+
+        <span class="c1"># Combine filename and extension</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">extension</span><span class="p">):</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="n">extension</span>
+
+        <span class="k">return</span> <span class="n">filename</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_detect_extension_from_response</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">response</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">content_sample</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">explicit_extension</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer an extension from response metadata/content.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">content_type</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">extension</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension_router</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">extension</span> <span class="o">=</span> <span class="n">_normalize_extension</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">extension_router</span><span class="p">(</span>
+                        <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span>
+                        <span class="n">content</span><span class="o">=</span><span class="n">content_sample</span> <span class="ow">or</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                        <span class="n">content_type</span><span class="o">=</span><span class="n">content_type</span><span class="p">,</span>
+                        <span class="n">explicit_extension</span><span class="o">=</span><span class="n">explicit_extension</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">extension</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">extension</span> <span class="ow">and</span> <span class="n">content_type</span><span class="p">:</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="n">_normalize_extension</span><span class="p">(</span>
+                <span class="n">_infer_extension_from_content_type</span><span class="p">(</span><span class="n">content_type</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">extension</span><span class="p">:</span>
+            <span class="n">url_ext</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="n">_normalize_extension</span><span class="p">(</span><span class="n">url_ext</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">extension</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_extension_matches_content</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">response</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">],</span>
+        <span class="n">content_sample</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
+        <span class="n">user_supplied</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make sure the filename extension aligns with detected content type.</span>
+
+<span class="sd">        Returns the (maybe updated) filename and an optional warning message.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">detected_extension</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detect_extension_from_response</span><span class="p">(</span>
+            <span class="n">url</span><span class="p">,</span>
+            <span class="n">response</span><span class="p">,</span>
+            <span class="n">content_sample</span><span class="o">=</span><span class="n">content_sample</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">detected_extension</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">filename</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">detected_extension</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+            <span class="n">detected_extension</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;.</span><span class="si">{</span><span class="n">detected_extension</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="n">current_ext</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span>
+        <span class="k">if</span> <span class="n">current_ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">detected_extension</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">filename</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="n">can_replace</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">user_supplied</span>
+            <span class="ow">or</span> <span class="ow">not</span> <span class="n">current_ext</span>
+            <span class="ow">or</span> <span class="n">current_ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">PLACEHOLDER_EXTENSIONS</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">can_replace</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">filename</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="n">new_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="si">}{</span><span class="n">detected_extension</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">response</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">warning</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Adjusted filename extension to match detected content type&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; (</span><span class="si">{</span><span class="n">content_type</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;unknown&#39;</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">new_filename</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_filename</span><span class="p">,</span> <span class="n">warning</span>
+
+<div class="viewcode-block" id="DownloadEngine.download">
+<a class="viewcode-back" href="../../../../module_docs/aw_agents/agents/download/download_core.html#aw_agents.agents.download.DownloadEngine.download">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">download</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">download_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">force_redownload</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Download content from a URL with smart handling.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            url: URL to download from</span>
+<span class="sd">            context: Context about the content (used for filename generation)</span>
+<span class="sd">            download_dir: Directory to download to (default: self.default_download_dir)</span>
+<span class="sd">            filename: Override automatic filename generation</span>
+<span class="sd">            force_redownload: Force re-download even if cached</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary with:</span>
+<span class="sd">                - &#39;path&#39;: Path to downloaded file</span>
+<span class="sd">                - &#39;url&#39;: Final URL downloaded from</span>
+<span class="sd">                - &#39;warnings&#39;: List of warning messages</span>
+<span class="sd">                - &#39;metadata&#39;: Additional metadata</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; engine = DownloadEngine()</span>
+<span class="sd">            &gt;&gt;&gt; # result = engine.download(&quot;https://example.com/paper.pdf&quot;, context=&quot;ML Paper&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; # print(result[&#39;path&#39;])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">_remove_url_crap</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="n">warnings</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Resolve actual download URL</span>
+        <span class="n">final_url</span><span class="p">,</span> <span class="n">warning</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_download_url</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">warning</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">warning</span><span class="p">)</span>
+
+        <span class="c1"># Determine download directory</span>
+        <span class="n">target_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">download_dir</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_download_dir</span><span class="p">)</span>
+        <span class="n">target_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Configure graze for this download</span>
+        <span class="n">cache_dir</span> <span class="o">=</span> <span class="n">target_dir</span>
+        <span class="n">my_graze</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">graze</span><span class="p">,</span> <span class="n">rootdir</span><span class="o">=</span><span class="n">cache_dir</span><span class="p">)</span>
+
+        <span class="c1"># Generate filename if not provided</span>
+        <span class="n">user_provided_filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="c1"># Need to make a request to get headers for filename generation</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">head_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">final_url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">)</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_filename</span><span class="p">(</span><span class="n">final_url</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">head_response</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_filename</span><span class="p">(</span><span class="n">final_url</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Download using graze</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Use graze to download and cache</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">target_dir</span> <span class="o">/</span> <span class="n">filename</span>
+
+            <span class="c1"># Download</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">final_url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+
+            <span class="n">chunk_iter</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">8192</span><span class="p">)</span>
+            <span class="n">first_chunk</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">chunk_iter</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+            <span class="n">filename</span><span class="p">,</span> <span class="n">extension_warning</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_extension_matches_content</span><span class="p">(</span>
+                <span class="n">filename</span><span class="p">,</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">final_url</span><span class="p">,</span>
+                <span class="n">response</span><span class="o">=</span><span class="n">response</span><span class="p">,</span>
+                <span class="n">content_sample</span><span class="o">=</span><span class="n">first_chunk</span><span class="p">,</span>
+                <span class="n">user_supplied</span><span class="o">=</span><span class="n">user_provided_filename</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">extension_warning</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">extension_warning</span><span class="p">)</span>
+
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">target_dir</span> <span class="o">/</span> <span class="n">filename</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">first_chunk</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">first_chunk</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">chunk_iter</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+
+            <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;content_type&#39;</span><span class="p">:</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;content_length&#39;</span><span class="p">:</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-length&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;final_url&#39;</span><span class="p">:</span> <span class="n">final_url</span><span class="p">,</span>
+            <span class="p">}</span>
+
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">),</span>
+                <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">final_url</span><span class="p">,</span>
+                <span class="s1">&#39;warnings&#39;</span><span class="p">:</span> <span class="n">warnings</span><span class="p">,</span>
+                <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="n">metadata</span><span class="p">,</span>
+            <span class="p">}</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to download </span><span class="si">{</span><span class="n">final_url</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span></div>
+
+
+<div class="viewcode-block" id="DownloadEngine.download_multiple">
+<a class="viewcode-back" href="../../../../module_docs/aw_agents/agents/download/download_core.html#aw_agents.agents.download.DownloadEngine.download_multiple">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">download_multiple</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">urls</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">contexts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">download_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Download multiple URLs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            urls: List of URLs to download</span>
+<span class="sd">            contexts: Optional list of contexts (same length as urls)</span>
+<span class="sd">            download_dir: Directory to download to</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of result dictionaries (one per URL)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">contexts</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">contexts</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;contexts must be same length as urls&quot;</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">url</span><span class="p">,</span> <span class="n">context</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span> <span class="n">contexts</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="n">download_dir</span><span class="o">=</span><span class="n">download_dir</span><span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">url</span><span class="p">,</span>
+                        <span class="s1">&#39;warnings&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+                        <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span></div>
+</div>
+
+
+
+<span class="c1"># Convenience function</span>
+<div class="viewcode-block" id="download_content">
+<a class="viewcode-back" href="../../../../module_docs/aw_agents/agents/download/download_core.html#aw_agents.agents.download.download_content">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">download_content</span><span class="p">(</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">download_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convenience function to download a single URL and return the path.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; # path = download_content(&quot;https://example.com/file.pdf&quot;, context=&quot;Important doc&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">engine</span> <span class="o">=</span> <span class="n">DownloadEngine</span><span class="p">(</span><span class="n">default_download_dir</span><span class="o">=</span><span class="n">download_dir</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

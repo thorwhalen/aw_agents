@@ -1,0 +1,4 @@
+aw_agents.agents.download.download_core
+=======================================
+.. automodule:: aw_agents.agents.download.download_core
+   :members:

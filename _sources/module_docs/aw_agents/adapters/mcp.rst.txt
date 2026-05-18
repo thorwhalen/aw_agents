@@ -1,0 +1,4 @@
+aw_agents.adapters.mcp
+======================
+.. automodule:: aw_agents.adapters.mcp
+   :members:
