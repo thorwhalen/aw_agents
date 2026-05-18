@@ -1,0 +1,178 @@
+[build-system]
+requires = [
+    "hatchling",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "aw_agents"
+version = "0.1.1"
+description = "\nAI agents for agentic workflows\ndeployable to multiple chatbot platforms"
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = [
+    "ai",
+    "agents",
+    "chatbots",
+    "mcp",
+    "openapi",
+    "claude",
+    "chatgpt",
+]
+authors = [
+    { name = "Thor Whalen" },
+]
+dependencies = [
+    "requests>=2.31.0",
+    "beautifulsoup4>=4.12.0",
+    "graze>=0.1.0",
+    "aw>=0.1.0",
+]
+
+[project.license]
+text = "MIT"
+
+[project.urls]
+Homepage = "https://github.com/thorwhalen/aw_agents"
+
+[project.optional-dependencies]
+mcp = [
+    "mcp>=0.1.0",
+]
+api = [
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "pydantic>=2.5.0",
+]
+all = [
+    "mcp>=0.1.0",
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "pydantic>=2.5.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "mypy>=1.0.0",
+    "ruff>=0.1.0",
+]
+testing = []
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+exclude = [
+    "**/*.ipynb",
+    ".git",
+    ".venv",
+    "build",
+    "dist",
+    "tests",
+    "examples",
+    "scrap",
+]
+
+[tool.ruff.lint]
+select = [
+    "D100",
+]
+ignore = [
+    "D203",
+    "E501",
+    "B905",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/*" = [
+    "D",
+]
+"**/examples/*" = [
+    "D",
+]
+"**/scrap/*" = [
+    "D",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "tests",
+]
+doctest_optionflags = [
+    "NORMALIZE_WHITESPACE",
+    "ELLIPSIS",
+]
+
+[tool.wads.ci]
+project_name = ""
+
+[tool.wads.ci.commands]
+pre_test = []
+test = []
+post_test = []
+lint = []
+format = []
+
+[tool.wads.ci.env]
+required_envvars = []
+test_envvars = []
+extra_envvars = []
+
+[tool.wads.ci.env.defaults]
+
+[tool.wads.ci.quality.ruff]
+enabled = true
+
+[tool.wads.ci.quality.black]
+enabled = false
+
+[tool.wads.ci.quality.mypy]
+enabled = false
+
+[tool.wads.ci.testing]
+python_versions = [
+    "3.10",
+    "3.12",
+]
+pytest_args = [
+    "-v",
+    "--tb=short",
+]
+coverage_enabled = true
+coverage_threshold = 0
+coverage_report_format = [
+    "term",
+    "xml",
+]
+exclude_paths = [
+    "examples",
+    "scrap",
+]
+test_on_windows = true
+
+[tool.wads.ci.metrics]
+enabled = true
+config_path = ".github/umpyre-config.yml"
+storage_branch = "code-metrics"
+python_version = "3.10"
+force_run = false
+
+[tool.wads.ci.build]
+sdist = true
+wheel = true
+
+[tool.wads.ci.publish]
+enabled = true
+
+[tool.wads.ci.docs]
+enabled = true
+builder = "epythet"
+ignore_paths = [
+    "tests/",
+    "scrap/",
+    "examples/",
+]
