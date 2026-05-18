@@ -7,7 +7,7 @@ including the ArXiv PDF bug where .html extension was incorrectly assigned.
 
 import pytest
 from pathlib import Path
-from aw_agents.download.download_core import DownloadEngine
+from aw_agents.agents.download.download_core import DownloadEngine
 
 
 def test_pdf_extension_from_url():

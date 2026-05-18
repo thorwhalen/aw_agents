@@ -69,7 +69,7 @@ def test_import():
         print(f"✓ Successfully imported aw_agents")
         print(f"  Version: {aw_agents.__version__}")
         
-        from aw_agents.download import DownloadAgent
+        from aw_agents.agents.download import DownloadAgent
         print("✓ Successfully imported DownloadAgent")
         
         from aw_agents.adapters import MCPAdapter, OpenAPIAdapter
@@ -91,7 +91,7 @@ def show_next_steps():
     print("   python examples.py")
     print()
     print("2. Test the download agent:")
-    print("   python -c 'from aw_agents.download import DownloadAgent; print(DownloadAgent().get_tools())'")
+    print("   python -c 'from aw_agents.agents.download import DownloadAgent; print(DownloadAgent().get_tools())'")
     print()
     print("3. Deploy to Claude:")
     print("   python scripts/deploy_mcp.py DownloadAgent --output ~/mcp_download.py")
