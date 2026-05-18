@@ -14,8 +14,8 @@ from aw import AW_DATA_DIR
 # Users can override by setting AW_AGENTS_DATA_DIR environment variable
 # Default: <AW_DATA_DIR>/agents
 # Example: ~/.local/share/aw/agents
-_aw_agents_data_dir_raw = os.environ.get('AW_AGENTS_DATA_DIR') or os.path.join(
-    AW_DATA_DIR, 'agents'
+_aw_agents_data_dir_raw = os.environ.get("AW_AGENTS_DATA_DIR") or os.path.join(
+    AW_DATA_DIR, "agents"
 )
 
 # Process path and ensure it exists

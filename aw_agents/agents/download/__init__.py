@@ -3,4 +3,4 @@
 from aw_agents.agents.download.agent import DownloadAgent
 from aw_agents.agents.download.download_core import DownloadEngine, download_content
 
-__all__ = ['DownloadAgent', 'DownloadEngine', 'download_content']
+__all__ = ["DownloadAgent", "DownloadEngine", "download_content"]

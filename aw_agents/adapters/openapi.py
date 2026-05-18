@@ -66,10 +66,10 @@ class OpenAPIAdapter:
         metadata = agent.get_metadata()
 
         self.app = FastAPI(
-            title=title or metadata.get('name', 'AI Agent API'),
+            title=title or metadata.get("name", "AI Agent API"),
             description=description
-            or metadata.get('description', 'AI Agent exposed via OpenAPI'),
-            version=version or metadata.get('version', '1.0.0'),
+            or metadata.get("description", "AI Agent exposed via OpenAPI"),
+            version=version or metadata.get("version", "1.0.0"),
         )
 
         # Add CORS middleware
@@ -93,9 +93,9 @@ class OpenAPIAdapter:
             """Root endpoint with API information."""
             metadata = self.agent.get_metadata()
             return {
-                "name": metadata.get('name'),
-                "version": metadata.get('version'),
-                "description": metadata.get('description'),
+                "name": metadata.get("name"),
+                "version": metadata.get("version"),
+                "description": metadata.get("description"),
                 "docs": "/docs",
                 "openapi": "/openapi.json",
             }
@@ -112,9 +112,9 @@ class OpenAPIAdapter:
 
     def _create_tool_endpoint(self, tool: Dict[str, Any]):
         """Create a FastAPI endpoint for a tool."""
-        name = tool['name']
-        description = tool['description']
-        parameters = tool['parameters']
+        name = tool["name"]
+        description = tool["description"]
+        parameters = tool["parameters"]
 
         # Create Pydantic model for request
         request_model = self._create_pydantic_model(f"{name}_request", parameters)
@@ -149,13 +149,13 @@ class OpenAPIAdapter:
         self, model_name: str, json_schema: Dict[str, Any]
     ) -> type[BaseModel]:
         """Create a Pydantic model from JSON schema."""
-        properties = json_schema.get('properties', {})
-        required = set(json_schema.get('required', []))
+        properties = json_schema.get("properties", {})
+        required = set(json_schema.get("required", []))
 
         fields = {}
         for prop_name, prop_schema in properties.items():
-            prop_type = self._json_type_to_python(prop_schema.get('type', 'string'))
-            prop_desc = prop_schema.get('description', '')
+            prop_type = self._json_type_to_python(prop_schema.get("type", "string"))
+            prop_desc = prop_schema.get("description", "")
 
             if prop_name in required:
                 fields[prop_name] = (prop_type, Field(..., description=prop_desc))
@@ -170,12 +170,12 @@ class OpenAPIAdapter:
     def _json_type_to_python(self, json_type: str) -> type:
         """Convert JSON schema type to Python type."""
         type_map = {
-            'string': str,
-            'integer': int,
-            'number': float,
-            'boolean': bool,
-            'array': list,
-            'object': dict,
+            "string": str,
+            "integer": int,
+            "number": float,
+            "boolean": bool,
+            "array": list,
+            "object": dict,
         }
         return type_map.get(json_type, str)
 
@@ -235,13 +235,13 @@ def create_api_server_script(
     """
     # Determine module path for import
     agent_module = agent_class.__module__
-    if agent_module.startswith('aw_agents.'):
+    if agent_module.startswith("aw_agents."):
         # Extract the submodule (e.g., 'agents.download' from 'aw_agents.agents.download.agent')
-        parts = agent_module.split('.')
+        parts = agent_module.split(".")
         if len(parts) > 3:
-            import_module = '.'.join(parts[:3])  # aw_agents.agents.download
+            import_module = ".".join(parts[:3])  # aw_agents.agents.download
         elif len(parts) > 2:
-            import_module = '.'.join(parts[:2])  # aw_agents.agents
+            import_module = ".".join(parts[:2])  # aw_agents.agents
         else:
             import_module = agent_module
     else:

@@ -25,14 +25,14 @@ def example_direct_usage():
     # Execute a tool
     print("\nDownloading a file...")
     result = agent.execute_tool(
-        'download_content',
+        "download_content",
         {
-            'url': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-            'context': 'Test PDF',
+            "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            "context": "Test PDF",
         },
     )
 
-    if result['success']:
+    if result["success"]:
         print(f"✓ {result['message']}")
         print(f"  Path: {result['data']['path']}")
     else:
@@ -153,7 +153,7 @@ adapter.run(port=8001)
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     example_direct_usage()
     example_mcp_deployment()
     example_api_deployment()

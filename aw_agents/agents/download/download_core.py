@@ -32,7 +32,7 @@ except ImportError:
 
 # Extensions that should be treated as placeholders and replaced when better
 # information becomes available from response headers or sniffed bytes.
-PLACEHOLDER_EXTENSIONS = {'.bin', '.tmp', '.dat', '.download'}
+PLACEHOLDER_EXTENSIONS = {".bin", ".tmp", ".dat", ".download"}
 
 
 def _normalize_extension(extension: Optional[str]) -> Optional[str]:
@@ -41,8 +41,8 @@ def _normalize_extension(extension: Optional[str]) -> Optional[str]:
     if not extension:
         return None
 
-    if not extension.startswith('.'):
-        extension = f'.{extension}'
+    if not extension.startswith("."):
+        extension = f".{extension}"
 
     if extension.lower() in PLACEHOLDER_EXTENSIONS:
         return None
@@ -63,11 +63,11 @@ def _sanitize_filename(name: str, max_length: int = 200) -> str:
     'My_Document'
     """
     # Replace invalid characters with underscores
-    name = re.sub(r'[<>:"/\\|?*]', '_', name)
+    name = re.sub(r'[<>:"/\\|?*]', "_", name)
     # Replace multiple spaces/underscores with single underscore
-    name = re.sub(r'[\s_]+', '_', name)
+    name = re.sub(r"[\s_]+", "_", name)
     # Remove leading/trailing underscores
-    name = name.strip('_')
+    name = name.strip("_")
     # Limit length
     if len(name) > max_length:
         name = name[:max_length]
@@ -83,8 +83,8 @@ def _infer_extension_from_content_type(content_type: str) -> str:
     >>> _infer_extension_from_content_type('text/html')
     '.html'
     """
-    ext = mimetypes.guess_extension(content_type.split(';')[0].strip())
-    return ext or ''
+    ext = mimetypes.guess_extension(content_type.split(";")[0].strip())
+    return ext or ""
 
 
 def _is_likely_landing_page(response: requests.Response) -> bool:
@@ -96,9 +96,9 @@ def _is_likely_landing_page(response: requests.Response) -> bool:
     - Content is relatively small (< 1MB)
     - Contains common download link patterns
     """
-    content_type = response.headers.get('content-type', '').lower()
+    content_type = response.headers.get("content-type", "").lower()
 
-    if 'text/html' not in content_type:
+    if "text/html" not in content_type:
         return False
 
     # If HTML is very large, it's probably the actual content
@@ -106,25 +106,25 @@ def _is_likely_landing_page(response: requests.Response) -> bool:
         return False
 
     # Look for download link patterns
-    soup = BeautifulSoup(response.content, 'html.parser')
+    soup = BeautifulSoup(response.content, "html.parser")
 
     # Common patterns for download links
     download_patterns = [
-        'download',
-        'get file',
-        'direct link',
-        'pdf',
-        '.zip',
-        '.tar',
-        '.csv',
-        '.json',
+        "download",
+        "get file",
+        "direct link",
+        "pdf",
+        ".zip",
+        ".tar",
+        ".csv",
+        ".json",
     ]
 
     # Check links and buttons
-    links = soup.find_all(['a', 'button'])
+    links = soup.find_all(["a", "button"])
     for link in links:
         text = link.get_text().lower()
-        href = link.get('href', '').lower()
+        href = link.get("href", "").lower()
 
         if any(pattern in text or pattern in href for pattern in download_patterns):
             return True
@@ -138,24 +138,24 @@ def _find_download_link(url: str, response: requests.Response) -> Optional[str]:
 
     Returns the most likely download URL, or None if not found.
     """
-    soup = BeautifulSoup(response.content, 'html.parser')
+    soup = BeautifulSoup(response.content, "html.parser")
 
     # Priority patterns for download links
     priority_patterns = [
-        (r'\.pdf$', 10),  # Direct PDF links
-        (r'download', 8),
-        (r'\.zip$', 7),
-        (r'\.tar\.gz$', 7),
-        (r'\.csv$', 6),
-        (r'\.json$', 6),
-        (r'/raw/', 5),  # GitHub raw links
-        (r'/blob/', 3),  # GitHub blob (need to convert to raw)
+        (r"\.pdf$", 10),  # Direct PDF links
+        (r"download", 8),
+        (r"\.zip$", 7),
+        (r"\.tar\.gz$", 7),
+        (r"\.csv$", 6),
+        (r"\.json$", 6),
+        (r"/raw/", 5),  # GitHub raw links
+        (r"/blob/", 3),  # GitHub blob (need to convert to raw)
     ]
 
     candidates = []
 
-    for link in soup.find_all('a', href=True):
-        href = link.get('href', '')
+    for link in soup.find_all("a", href=True):
+        href = link.get("href", "")
         text = link.get_text().lower()
 
         # Make absolute URL
@@ -185,10 +185,10 @@ def _handle_github_url(url: str) -> str:
     >>> _handle_github_url('https://github.com/user/repo/blob/main/file.pdf')
     'https://raw.githubusercontent.com/user/repo/main/file.pdf'
     """
-    if 'github.com' in url and '/blob/' in url:
+    if "github.com" in url and "/blob/" in url:
         # Convert blob to raw
-        url = url.replace('github.com', 'raw.githubusercontent.com')
-        url = url.replace('/blob/', '/')
+        url = url.replace("github.com", "raw.githubusercontent.com")
+        url = url.replace("/blob/", "/")
     return url
 
 
@@ -199,9 +199,9 @@ def _handle_huggingface_url(url: str) -> str:
     >>> _handle_huggingface_url('https://huggingface.co/datasets/user/dataset/blob/main/data.csv')
     'https://huggingface.co/datasets/user/dataset/resolve/main/data.csv'
     """
-    if 'huggingface.co' in url and '/blob/' in url:
+    if "huggingface.co" in url and "/blob/" in url:
         # Convert blob to resolve for direct download
-        url = url.replace('/blob/', '/resolve/')
+        url = url.replace("/blob/", "/resolve/")
     return url
 
 
@@ -226,7 +226,7 @@ class DownloadEngine:
         user_agent: str = "DownloadAgent/1.0",
         timeout: int = 30,
         max_redirects: int = 5,
-        extension_router: Optional['ExtensionRouter'] = None,
+        extension_router: Optional["ExtensionRouter"] = None,
     ):
         """
         Initialize the download agent.
@@ -252,7 +252,7 @@ class DownloadEngine:
 
         # Session for requests
         self.session = requests.Session()
-        self.session.headers.update({'User-Agent': user_agent})
+        self.session.headers.update({"User-Agent": user_agent})
 
     def _resolve_download_url(self, url: str) -> tuple[str, Optional[str]]:
         """
@@ -323,8 +323,8 @@ class DownloadEngine:
 
         # Try Content-Disposition header first (may have complete filename)
         if response:
-            content_disp = response.headers.get('content-disposition', '')
-            if 'filename=' in content_disp:
+            content_disp = response.headers.get("content-disposition", "")
+            if "filename=" in content_disp:
                 match = re.search(r'filename="?([^"]+)"?', content_disp)
                 if match:
                     filename = match.group(1)
@@ -338,21 +338,21 @@ class DownloadEngine:
         # Fall back to URL path
         if not filename:
             path = urlparse(url).path
-            filename = Path(path).stem or 'download'
+            filename = Path(path).stem or "download"
             filename = _sanitize_filename(filename)
 
         # Determine extension using router
         if self.extension_router:
             # Gather context for routing
-            content = b''
-            content_type = ''
+            content = b""
+            content_type = ""
 
             if response:
-                content_type = response.headers.get('content-type', '')
+                content_type = response.headers.get("content-type", "")
                 # Try to read first chunk for magic byte detection
                 # (only if we have response content available)
                 try:
-                    if hasattr(response, 'content'):
+                    if hasattr(response, "content"):
                         content = response.content[:100]  # First 100 bytes
                 except Exception:
                     pass
@@ -368,14 +368,14 @@ class DownloadEngine:
             )
 
         if not extension and response:
-            content_type = response.headers.get('content-type', '')
+            content_type = response.headers.get("content-type", "")
             extension = _normalize_extension(
                 _infer_extension_from_content_type(content_type)
             )
 
         if not extension:
             url_ext = Path(urlparse(url).path).suffix
-            extension = _normalize_extension(url_ext) or '.bin'
+            extension = _normalize_extension(url_ext) or ".bin"
 
         # Combine filename and extension
         if not filename.endswith(extension):
@@ -388,7 +388,7 @@ class DownloadEngine:
         url: str,
         response: Optional[requests.Response],
         *,
-        content_sample: bytes = b'',
+        content_sample: bytes = b"",
         explicit_extension: Optional[str] = None,
     ) -> Optional[str]:
         """Infer an extension from response metadata/content."""
@@ -396,7 +396,7 @@ class DownloadEngine:
         if not response:
             return None
 
-        content_type = response.headers.get('content-type', '')
+        content_type = response.headers.get("content-type", "")
         extension = None
 
         if self.extension_router:
@@ -404,7 +404,7 @@ class DownloadEngine:
                 extension = _normalize_extension(
                     self.extension_router(
                         url=url,
-                        content=content_sample or b'',
+                        content=content_sample or b"",
                         content_type=content_type,
                         explicit_extension=explicit_extension,
                     )
@@ -447,8 +447,8 @@ class DownloadEngine:
         if not detected_extension:
             return filename, None
 
-        if not detected_extension.startswith('.'):
-            detected_extension = f'.{detected_extension}'
+        if not detected_extension.startswith("."):
+            detected_extension = f".{detected_extension}"
 
         current_ext = Path(filename).suffix
         if current_ext.lower() == detected_extension.lower():
@@ -464,7 +464,7 @@ class DownloadEngine:
             return filename, None
 
         new_filename = f"{Path(filename).stem}{detected_extension}"
-        content_type = response.headers.get('content-type') if response else None
+        content_type = response.headers.get("content-type") if response else None
         warning = (
             "Adjusted filename extension to match detected content type"
             f" ({content_type or 'unknown'}): {filename} -> {new_filename}"
@@ -539,7 +539,7 @@ class DownloadEngine:
             response.raise_for_status()
 
             chunk_iter = response.iter_content(chunk_size=8192)
-            first_chunk = next(chunk_iter, b'')
+            first_chunk = next(chunk_iter, b"")
 
             filename, extension_warning = self._ensure_extension_matches_content(
                 filename,
@@ -553,7 +553,7 @@ class DownloadEngine:
 
             file_path = target_dir / filename
 
-            with open(file_path, 'wb') as f:
+            with open(file_path, "wb") as f:
                 if first_chunk:
                     f.write(first_chunk)
                 for chunk in chunk_iter:
@@ -561,16 +561,16 @@ class DownloadEngine:
                         f.write(chunk)
 
             metadata = {
-                'content_type': response.headers.get('content-type'),
-                'content_length': response.headers.get('content-length'),
-                'final_url': final_url,
+                "content_type": response.headers.get("content-type"),
+                "content_length": response.headers.get("content-length"),
+                "final_url": final_url,
             }
 
             return {
-                'path': str(file_path),
-                'url': final_url,
-                'warnings': warnings,
-                'metadata': metadata,
+                "path": str(file_path),
+                "url": final_url,
+                "warnings": warnings,
+                "metadata": metadata,
             }
 
         except Exception as e:
@@ -608,10 +608,10 @@ class DownloadEngine:
             except Exception as e:
                 results.append(
                     {
-                        'path': None,
-                        'url': url,
-                        'warnings': [f"Failed: {e}"],
-                        'metadata': {},
+                        "path": None,
+                        "url": url,
+                        "warnings": [f"Failed: {e}"],
+                        "metadata": {},
                     }
                 )
 
@@ -633,4 +633,4 @@ def download_content(
     """
     engine = DownloadEngine(default_download_dir=download_dir)
     result = engine.download(url, context=context)
-    return result['path']
+    return result["path"]

@@ -59,9 +59,9 @@ class MCPAdapter:
             for tool in agent_tools:
                 mcp_tools.append(
                     Tool(
-                        name=tool['name'],
-                        description=tool['description'],
-                        inputSchema=tool['parameters'],
+                        name=tool["name"],
+                        description=tool["description"],
+                        inputSchema=tool["parameters"],
                     )
                 )
 
@@ -74,7 +74,7 @@ class MCPAdapter:
                 result = self.agent.execute_tool(name, arguments)
 
                 # Format response based on result
-                if result['success']:
+                if result["success"]:
                     response_text = self._format_success_response(result)
                 else:
                     response_text = self._format_error_response(result)
@@ -92,28 +92,28 @@ class MCPAdapter:
         """Format a successful tool execution response."""
         parts = []
 
-        if result.get('message'):
+        if result.get("message"):
             parts.append(f"✓ {result['message']}")
         else:
             parts.append("✓ Operation completed successfully")
 
         # Add data if present
-        if result.get('data'):
+        if result.get("data"):
             parts.append("")
-            parts.append(str(result['data']))
+            parts.append(str(result["data"]))
 
         # Add warnings if present
-        if result.get('warnings'):
+        if result.get("warnings"):
             parts.append("")
             parts.append("Warnings:")
-            for warning in result['warnings']:
+            for warning in result["warnings"]:
                 parts.append(f"  • {warning}")
 
         return "\n".join(parts)
 
     def _format_error_response(self, result: Dict[str, Any]) -> str:
         """Format an error response."""
-        message = result.get('message', 'Unknown error')
+        message = result.get("message", "Unknown error")
         return f"❌ Error: {message}"
 
     async def run(self):
@@ -139,13 +139,13 @@ def create_mcp_server_script(agent_class, server_name: str, output_path: Path):
     """
     # Determine module path for import
     agent_module = agent_class.__module__
-    if agent_module.startswith('aw_agents.'):
+    if agent_module.startswith("aw_agents."):
         # Extract the submodule (e.g., 'agents.download' from 'aw_agents.agents.download.agent')
-        parts = agent_module.split('.')
+        parts = agent_module.split(".")
         if len(parts) > 3:
-            import_module = '.'.join(parts[:3])  # aw_agents.agents.download
+            import_module = ".".join(parts[:3])  # aw_agents.agents.download
         elif len(parts) > 2:
-            import_module = '.'.join(parts[:2])  # aw_agents.agents
+            import_module = ".".join(parts[:2])  # aw_agents.agents
         else:
             import_module = agent_module
     else:

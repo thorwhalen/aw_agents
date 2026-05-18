@@ -13,12 +13,12 @@ import importlib
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Generate API server script for an agent'
+        description="Generate API server script for an agent"
     )
-    parser.add_argument('agent_name', help='Agent class name (e.g., DownloadAgent)')
-    parser.add_argument('--output', '-o', required=True, help='Output script path')
+    parser.add_argument("agent_name", help="Agent class name (e.g., DownloadAgent)")
+    parser.add_argument("--output", "-o", required=True, help="Output script path")
     parser.add_argument(
-        '--port', type=int, default=8000, help='Default port (default: 8000)'
+        "--port", type=int, default=8000, help="Default port (default: 8000)"
     )
 
     args = parser.parse_args()
@@ -26,12 +26,12 @@ def main():
     # Import the agent class
     try:
         # Try different import patterns
-        if args.agent_name == 'DownloadAgent':
+        if args.agent_name == "DownloadAgent":
             from aw_agents.agents.download import DownloadAgent as agent_class
         else:
             # Try to import from aw_agents.agents
-            module_name = args.agent_name.lower().replace('agent', '')
-            module = importlib.import_module(f'aw_agents.agents.{module_name}')
+            module_name = args.agent_name.lower().replace("agent", "")
+            module = importlib.import_module(f"aw_agents.agents.{module_name}")
             agent_class = getattr(module, args.agent_name)
     except (ImportError, AttributeError) as e:
         print(f"Error: Could not import {args.agent_name}")
@@ -55,5 +55,5 @@ def main():
     print(f"  2. Import schema from: http://localhost:{args.port}/openapi.json")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     exit(main() or 0)

@@ -55,93 +55,93 @@ class DownloadAgent(AgentBase):
         """Return tool definitions for this agent."""
         return [
             {
-                'name': 'download_content',
-                'description': (
+                "name": "download_content",
+                "description": (
                     "Download content from a URL with intelligent handling. "
                     "Automatically detects landing pages and finds actual download links. "
                     "Handles PDFs, datasets, and other content types. "
                     "Generates context-aware filenames. "
                     "Special support for GitHub, HuggingFace, Kaggle, and academic papers."
                 ),
-                'parameters': create_json_schema(
+                "parameters": create_json_schema(
                     properties={
-                        'url': {
-                            'type': 'string',
-                            'description': 'URL to download from',
+                        "url": {
+                            "type": "string",
+                            "description": "URL to download from",
                         },
-                        'context': {
-                            'type': 'string',
-                            'description': (
-                                'Context about the content (title, description) - '
-                                'used to generate a meaningful filename'
+                        "context": {
+                            "type": "string",
+                            "description": (
+                                "Context about the content (title, description) - "
+                                "used to generate a meaningful filename"
                             ),
                         },
-                        'download_dir': {
-                            'type': 'string',
-                            'description': (
-                                'Optional: Directory to download to. '
-                                'Default: ~/Downloads'
+                        "download_dir": {
+                            "type": "string",
+                            "description": (
+                                "Optional: Directory to download to. "
+                                "Default: ~/Downloads"
                             ),
                         },
-                        'filename': {
-                            'type': 'string',
-                            'description': 'Optional: Override automatic filename generation',
+                        "filename": {
+                            "type": "string",
+                            "description": "Optional: Override automatic filename generation",
                         },
                     },
-                    required=['url'],
+                    required=["url"],
                 ),
             },
             {
-                'name': 'download_multiple',
-                'description': (
+                "name": "download_multiple",
+                "description": (
                     "Download multiple URLs at once. "
                     "Returns paths to all downloaded files. "
                     "Each URL can have its own context for filename generation."
                 ),
-                'parameters': create_json_schema(
+                "parameters": create_json_schema(
                     properties={
-                        'urls': {
-                            'type': 'array',
-                            'items': {'type': 'string'},
-                            'description': 'List of URLs to download',
+                        "urls": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "List of URLs to download",
                         },
-                        'contexts': {
-                            'type': 'array',
-                            'items': {'type': 'string'},
-                            'description': (
-                                'Optional: List of contexts (one per URL) '
-                                'for filename generation'
+                        "contexts": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": (
+                                "Optional: List of contexts (one per URL) "
+                                "for filename generation"
                             ),
                         },
-                        'download_dir': {
-                            'type': 'string',
-                            'description': (
-                                'Optional: Directory to download to. '
-                                'Default: ~/Downloads'
+                        "download_dir": {
+                            "type": "string",
+                            "description": (
+                                "Optional: Directory to download to. "
+                                "Default: ~/Downloads"
                             ),
                         },
                     },
-                    required=['urls'],
+                    required=["urls"],
                 ),
             },
             {
-                'name': 'list_downloads',
-                'description': (
+                "name": "list_downloads",
+                "description": (
                     "List files in the downloads directory. "
                     "Helps track what has been downloaded."
                 ),
-                'parameters': create_json_schema(
+                "parameters": create_json_schema(
                     properties={
-                        'download_dir': {
-                            'type': 'string',
-                            'description': (
-                                'Optional: Directory to list. ' 'Default: ~/Downloads'
+                        "download_dir": {
+                            "type": "string",
+                            "description": (
+                                "Optional: Directory to list. Default: ~/Downloads"
                             ),
                         },
-                        'pattern': {
-                            'type': 'string',
-                            'description': (
-                                'Optional: Glob pattern to filter files '
+                        "pattern": {
+                            "type": "string",
+                            "description": (
+                                "Optional: Glob pattern to filter files "
                                 '(e.g., "*.pdf", "*.csv")'
                             ),
                         },
@@ -154,11 +154,11 @@ class DownloadAgent(AgentBase):
     def execute_tool(self, name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         """Execute a tool with given arguments."""
 
-        if name == 'download_content':
+        if name == "download_content":
             return self._download_content(**arguments)
-        elif name == 'download_multiple':
+        elif name == "download_multiple":
             return self._download_multiple(**arguments)
-        elif name == 'list_downloads':
+        elif name == "list_downloads":
             return self._list_downloads(**arguments)
         else:
             return ToolExecutionResult.error_result(
@@ -182,10 +182,10 @@ class DownloadAgent(AgentBase):
             message = f"Downloaded successfully to: {result['path']}"
 
             return ToolExecutionResult.success_result(
-                data={'path': result['path'], 'url': result['url']},
+                data={"path": result["path"], "url": result["url"]},
                 message=message,
-                warnings=result.get('warnings', []),
-                metadata=result.get('metadata', {}),
+                warnings=result.get("warnings", []),
+                metadata=result.get("metadata", {}),
             ).to_dict()
 
         except Exception as e:
@@ -205,7 +205,7 @@ class DownloadAgent(AgentBase):
                 urls, contexts=contexts, download_dir=download_dir
             )
 
-            successful = sum(1 for r in results if r['path'])
+            successful = sum(1 for r in results if r["path"])
             failed = len(results) - successful
 
             message = f"Downloaded {successful}/{len(results)} files"
@@ -214,10 +214,10 @@ class DownloadAgent(AgentBase):
 
             return ToolExecutionResult.success_result(
                 data={
-                    'results': results,
-                    'total': len(results),
-                    'successful': successful,
-                    'failed': failed,
+                    "results": results,
+                    "total": len(results),
+                    "successful": successful,
+                    "failed": failed,
                 },
                 message=message,
             ).to_dict()
@@ -242,10 +242,10 @@ class DownloadAgent(AgentBase):
             files = sorted(target_dir.glob(pattern))
             file_list = [
                 {
-                    'name': f.name,
-                    'path': str(f),
-                    'size': f.stat().st_size,
-                    'size_formatted': self._format_size(f.stat().st_size),
+                    "name": f.name,
+                    "path": str(f),
+                    "size": f.stat().st_size,
+                    "size_formatted": self._format_size(f.stat().st_size),
                 }
                 for f in files
                 if f.is_file()
@@ -255,9 +255,9 @@ class DownloadAgent(AgentBase):
 
             return ToolExecutionResult.success_result(
                 data={
-                    'directory': str(target_dir),
-                    'files': file_list,
-                    'total': len(file_list),
+                    "directory": str(target_dir),
+                    "files": file_list,
+                    "total": len(file_list),
                 },
                 message=message,
             ).to_dict()
@@ -270,7 +270,7 @@ class DownloadAgent(AgentBase):
     @staticmethod
     def _format_size(bytes: int) -> str:
         """Format file size in human-readable format."""
-        for unit in ['B', 'KB', 'MB', 'GB']:
+        for unit in ["B", "KB", "MB", "GB"]:
             if bytes < 1024.0:
                 return f"{bytes:.1f} {unit}"
             bytes /= 1024.0
@@ -279,11 +279,11 @@ class DownloadAgent(AgentBase):
     def get_metadata(self) -> Dict[str, Any]:
         """Get agent metadata."""
         return {
-            'name': 'DownloadAgent',
-            'version': '1.0.0',
-            'description': (
-                'Smart content downloader with context-aware naming and '
-                'intelligent link handling'
+            "name": "DownloadAgent",
+            "version": "1.0.0",
+            "description": (
+                "Smart content downloader with context-aware naming and "
+                "intelligent link handling"
             ),
         }
 
@@ -322,13 +322,13 @@ def _run_mcp_server():
 
     # Automatically add to Claude Desktop config
     server_config = {
-        'command': 'python',
-        'args': [str(Path(__file__).absolute())],
+        "command": "python",
+        "args": [str(Path(__file__).absolute())],
     }
 
     try:
         mcp = claude_desktop_config()
-        mcp['download'] = server_config
+        mcp["download"] = server_config
         print("✓ Automatically added 'download' server to Claude Desktop config!")
         print()
     except Exception as e:
@@ -339,14 +339,14 @@ def _run_mcp_server():
             f"   Location: ~/Library/Application Support/Claude/claude_desktop_config.json"
         )
         print()
-        print('   {')
+        print("   {")
         print('     "mcpServers": {')
         print('       "download": {')
         print('         "command": "python",')
         print(f'         "args": ["{Path(__file__).absolute()}"]')
-        print('       }')
-        print('     }')
-        print('   }')
+        print("       }")
+        print("     }")
+        print("   }")
         print()
 
     # Print instructions
@@ -456,7 +456,7 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(
-        description='Run the Download Agent server',
+        description="Run the Download Agent server",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -474,18 +474,18 @@ Examples:
     )
 
     parser.add_argument(
-        '--mcp', action='store_true', help='Run MCP server for Claude Desktop (default)'
+        "--mcp", action="store_true", help="Run MCP server for Claude Desktop (default)"
     )
     parser.add_argument(
-        '--api', action='store_true', help='Run OpenAPI/FastAPI server for ChatGPT'
+        "--api", action="store_true", help="Run OpenAPI/FastAPI server for ChatGPT"
     )
     parser.add_argument(
-        '--port', type=int, default=8000, help='Port for API server (default: 8000)'
+        "--port", type=int, default=8000, help="Port for API server (default: 8000)"
     )
     parser.add_argument(
-        '--server-url',
+        "--server-url",
         type=str,
-        help='Server URL for OpenAPI schema (e.g., ngrok URL like https://abc123.ngrok.io)',
+        help="Server URL for OpenAPI schema (e.g., ngrok URL like https://abc123.ngrok.io)",
     )
 
     args = parser.parse_args()
@@ -505,7 +505,7 @@ Examples:
         return _run_api_server(port=args.port, server_url=args.server_url)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     sys.exit(main())
