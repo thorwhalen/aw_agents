@@ -25,11 +25,12 @@ def test_agent_metadata():
     assert 'description' in metadata
 
 
-def test_list_downloads():
+def test_list_downloads(tmp_path):
     """Test listing downloads."""
     agent = DownloadAgent()
-    result = agent.execute_tool('list_downloads', {})
-    
+    # Pass an explicit existing dir; the default_download_dir may not exist in CI.
+    result = agent.execute_tool('list_downloads', {'download_dir': str(tmp_path)})
+
     assert result['success'] is True
     assert 'data' in result
     assert 'directory' in result['data']
