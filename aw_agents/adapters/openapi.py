@@ -5,6 +5,8 @@ This adapter wraps any AgentBase subclass to expose it as a REST API
 with OpenAPI spec for use with ChatGPT Custom GPTs.
 """
 
+from __future__ import annotations
+
 from typing import Any, Dict, Optional
 from pathlib import Path
 

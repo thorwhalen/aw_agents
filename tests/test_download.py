@@ -2,7 +2,7 @@
 
 import pytest
 from pathlib import Path
-from aw_agents.download import DownloadAgent
+from aw_agents.agents.download import DownloadAgent
 
 
 def test_agent_tools():
