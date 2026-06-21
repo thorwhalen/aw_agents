@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aw_agents.agents.download.agent &mdash; aw_agents 0.1.1 documentation</title>
+  <title>aw_agents.agents.download.agent &mdash; aw_agents 0.1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=a58bc63e"></script>
+      <script src="../../../../_static/documentation_options.js?v=92734c54"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -144,93 +144,93 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return tool definitions for this agent.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="p">{</span>
-                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;download_content&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;download_content&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="p">(</span>
                     <span class="s2">&quot;Download content from a URL with intelligent handling. &quot;</span>
                     <span class="s2">&quot;Automatically detects landing pages and finds actual download links. &quot;</span>
                     <span class="s2">&quot;Handles PDFs, datasets, and other content types. &quot;</span>
                     <span class="s2">&quot;Generates context-aware filenames. &quot;</span>
                     <span class="s2">&quot;Special support for GitHub, HuggingFace, Kaggle, and academic papers.&quot;</span>
                 <span class="p">),</span>
-                <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="n">create_json_schema</span><span class="p">(</span>
+                <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="n">create_json_schema</span><span class="p">(</span>
                     <span class="n">properties</span><span class="o">=</span><span class="p">{</span>
-                        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;URL to download from&#39;</span><span class="p">,</span>
+                        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;URL to download from&quot;</span><span class="p">,</span>
                         <span class="p">},</span>
-                        <span class="s1">&#39;context&#39;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="p">(</span>
-                                <span class="s1">&#39;Context about the content (title, description) - &#39;</span>
-                                <span class="s1">&#39;used to generate a meaningful filename&#39;</span>
+                        <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="p">(</span>
+                                <span class="s2">&quot;Context about the content (title, description) - &quot;</span>
+                                <span class="s2">&quot;used to generate a meaningful filename&quot;</span>
                             <span class="p">),</span>
                         <span class="p">},</span>
-                        <span class="s1">&#39;download_dir&#39;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="p">(</span>
-                                <span class="s1">&#39;Optional: Directory to download to. &#39;</span>
-                                <span class="s1">&#39;Default: ~/Downloads&#39;</span>
+                        <span class="s2">&quot;download_dir&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="p">(</span>
+                                <span class="s2">&quot;Optional: Directory to download to. &quot;</span>
+                                <span class="s2">&quot;Default: ~/Downloads&quot;</span>
                             <span class="p">),</span>
                         <span class="p">},</span>
-                        <span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Optional: Override automatic filename generation&#39;</span><span class="p">,</span>
+                        <span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Optional: Override automatic filename generation&quot;</span><span class="p">,</span>
                         <span class="p">},</span>
                     <span class="p">},</span>
-                    <span class="n">required</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span>
+                    <span class="n">required</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span>
                 <span class="p">),</span>
             <span class="p">},</span>
             <span class="p">{</span>
-                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;download_multiple&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;download_multiple&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="p">(</span>
                     <span class="s2">&quot;Download multiple URLs at once. &quot;</span>
                     <span class="s2">&quot;Returns paths to all downloaded files. &quot;</span>
                     <span class="s2">&quot;Each URL can have its own context for filename generation.&quot;</span>
                 <span class="p">),</span>
-                <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="n">create_json_schema</span><span class="p">(</span>
+                <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="n">create_json_schema</span><span class="p">(</span>
                     <span class="n">properties</span><span class="o">=</span><span class="p">{</span>
-                        <span class="s1">&#39;urls&#39;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;array&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;items&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
-                            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;List of URLs to download&#39;</span><span class="p">,</span>
+                        <span class="s2">&quot;urls&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
+                            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;List of URLs to download&quot;</span><span class="p">,</span>
                         <span class="p">},</span>
-                        <span class="s1">&#39;contexts&#39;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;array&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;items&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
-                            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="p">(</span>
-                                <span class="s1">&#39;Optional: List of contexts (one per URL) &#39;</span>
-                                <span class="s1">&#39;for filename generation&#39;</span>
+                        <span class="s2">&quot;contexts&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
+                            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="p">(</span>
+                                <span class="s2">&quot;Optional: List of contexts (one per URL) &quot;</span>
+                                <span class="s2">&quot;for filename generation&quot;</span>
                             <span class="p">),</span>
                         <span class="p">},</span>
-                        <span class="s1">&#39;download_dir&#39;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="p">(</span>
-                                <span class="s1">&#39;Optional: Directory to download to. &#39;</span>
-                                <span class="s1">&#39;Default: ~/Downloads&#39;</span>
+                        <span class="s2">&quot;download_dir&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="p">(</span>
+                                <span class="s2">&quot;Optional: Directory to download to. &quot;</span>
+                                <span class="s2">&quot;Default: ~/Downloads&quot;</span>
                             <span class="p">),</span>
                         <span class="p">},</span>
                     <span class="p">},</span>
-                    <span class="n">required</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;urls&#39;</span><span class="p">],</span>
+                    <span class="n">required</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;urls&quot;</span><span class="p">],</span>
                 <span class="p">),</span>
             <span class="p">},</span>
             <span class="p">{</span>
-                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;list_downloads&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;list_downloads&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="p">(</span>
                     <span class="s2">&quot;List files in the downloads directory. &quot;</span>
                     <span class="s2">&quot;Helps track what has been downloaded.&quot;</span>
                 <span class="p">),</span>
-                <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="n">create_json_schema</span><span class="p">(</span>
+                <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="n">create_json_schema</span><span class="p">(</span>
                     <span class="n">properties</span><span class="o">=</span><span class="p">{</span>
-                        <span class="s1">&#39;download_dir&#39;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="p">(</span>
-                                <span class="s1">&#39;Optional: Directory to list. &#39;</span> <span class="s1">&#39;Default: ~/Downloads&#39;</span>
+                        <span class="s2">&quot;download_dir&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="p">(</span>
+                                <span class="s2">&quot;Optional: Directory to list. Default: ~/Downloads&quot;</span>
                             <span class="p">),</span>
                         <span class="p">},</span>
-                        <span class="s1">&#39;pattern&#39;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="p">(</span>
-                                <span class="s1">&#39;Optional: Glob pattern to filter files &#39;</span>
+                        <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="p">(</span>
+                                <span class="s2">&quot;Optional: Glob pattern to filter files &quot;</span>
                                 <span class="s1">&#39;(e.g., &quot;*.pdf&quot;, &quot;*.csv&quot;)&#39;</span>
                             <span class="p">),</span>
                         <span class="p">},</span>
@@ -246,11 +246,11 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">execute_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute a tool with given arguments.&quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;download_content&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;download_content&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_download_content</span><span class="p">(</span><span class="o">**</span><span class="n">arguments</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;download_multiple&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;download_multiple&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_download_multiple</span><span class="p">(</span><span class="o">**</span><span class="n">arguments</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;list_downloads&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;list_downloads&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list_downloads</span><span class="p">(</span><span class="o">**</span><span class="n">arguments</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ToolExecutionResult</span><span class="o">.</span><span class="n">error_result</span><span class="p">(</span>
@@ -275,10 +275,10 @@
             <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Downloaded successfully to: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
 
             <span class="k">return</span> <span class="n">ToolExecutionResult</span><span class="o">.</span><span class="n">success_result</span><span class="p">(</span>
-                <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">],</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]},</span>
+                <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">],</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]},</span>
                 <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
-                <span class="n">warnings</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;warnings&#39;</span><span class="p">,</span> <span class="p">[]),</span>
-                <span class="n">metadata</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                <span class="n">warnings</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;warnings&quot;</span><span class="p">,</span> <span class="p">[]),</span>
+                <span class="n">metadata</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="p">{}),</span>
             <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -298,7 +298,7 @@
                 <span class="n">urls</span><span class="p">,</span> <span class="n">contexts</span><span class="o">=</span><span class="n">contexts</span><span class="p">,</span> <span class="n">download_dir</span><span class="o">=</span><span class="n">download_dir</span>
             <span class="p">)</span>
 
-            <span class="n">successful</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">])</span>
+            <span class="n">successful</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">])</span>
             <span class="n">failed</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">-</span> <span class="n">successful</span>
 
             <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Downloaded </span><span class="si">{</span><span class="n">successful</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> files&quot;</span>
@@ -307,10 +307,10 @@
 
             <span class="k">return</span> <span class="n">ToolExecutionResult</span><span class="o">.</span><span class="n">success_result</span><span class="p">(</span>
                 <span class="n">data</span><span class="o">=</span><span class="p">{</span>
-                    <span class="s1">&#39;results&#39;</span><span class="p">:</span> <span class="n">results</span><span class="p">,</span>
-                    <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">),</span>
-                    <span class="s1">&#39;successful&#39;</span><span class="p">:</span> <span class="n">successful</span><span class="p">,</span>
-                    <span class="s1">&#39;failed&#39;</span><span class="p">:</span> <span class="n">failed</span><span class="p">,</span>
+                    <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">,</span>
+                    <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">),</span>
+                    <span class="s2">&quot;successful&quot;</span><span class="p">:</span> <span class="n">successful</span><span class="p">,</span>
+                    <span class="s2">&quot;failed&quot;</span><span class="p">:</span> <span class="n">failed</span><span class="p">,</span>
                 <span class="p">},</span>
                 <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
             <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
@@ -335,10 +335,10 @@
             <span class="n">files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">target_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span>
             <span class="n">file_list</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                    <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
-                    <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">,</span>
-                    <span class="s1">&#39;size_formatted&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_size</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">),</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
+                    <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">,</span>
+                    <span class="s2">&quot;size_formatted&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_size</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">),</span>
                 <span class="p">}</span>
                 <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span>
                 <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
@@ -348,9 +348,9 @@
 
             <span class="k">return</span> <span class="n">ToolExecutionResult</span><span class="o">.</span><span class="n">success_result</span><span class="p">(</span>
                 <span class="n">data</span><span class="o">=</span><span class="p">{</span>
-                    <span class="s1">&#39;directory&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target_dir</span><span class="p">),</span>
-                    <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="n">file_list</span><span class="p">,</span>
-                    <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">),</span>
+                    <span class="s2">&quot;directory&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target_dir</span><span class="p">),</span>
+                    <span class="s2">&quot;files&quot;</span><span class="p">:</span> <span class="n">file_list</span><span class="p">,</span>
+                    <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">),</span>
                 <span class="p">},</span>
                 <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
             <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
@@ -363,7 +363,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_size</span><span class="p">(</span><span class="nb">bytes</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Format file size in human-readable format.&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;KB&#39;</span><span class="p">,</span> <span class="s1">&#39;MB&#39;</span><span class="p">,</span> <span class="s1">&#39;GB&#39;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;KB&quot;</span><span class="p">,</span> <span class="s2">&quot;MB&quot;</span><span class="p">,</span> <span class="s2">&quot;GB&quot;</span><span class="p">]:</span>
             <span class="k">if</span> <span class="nb">bytes</span> <span class="o">&lt;</span> <span class="mf">1024.0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">bytes</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="nb">bytes</span> <span class="o">/=</span> <span class="mf">1024.0</span>
@@ -374,11 +374,11 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get agent metadata.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;DownloadAgent&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0.0&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="p">(</span>
-                <span class="s1">&#39;Smart content downloader with context-aware naming and &#39;</span>
-                <span class="s1">&#39;intelligent link handling&#39;</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;DownloadAgent&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Smart content downloader with context-aware naming and &quot;</span>
+                <span class="s2">&quot;intelligent link handling&quot;</span>
             <span class="p">),</span>
         <span class="p">}</span></div>
 </div>
@@ -419,13 +419,13 @@
 
     <span class="c1"># Automatically add to Claude Desktop config</span>
     <span class="n">server_config</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;command&#39;</span><span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">())],</span>
+        <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">())],</span>
     <span class="p">}</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">mcp</span> <span class="o">=</span> <span class="n">claude_desktop_config</span><span class="p">()</span>
-        <span class="n">mcp</span><span class="p">[</span><span class="s1">&#39;download&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">server_config</span>
+        <span class="n">mcp</span><span class="p">[</span><span class="s2">&quot;download&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">server_config</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Automatically added &#39;download&#39; server to Claude Desktop config!&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -436,14 +436,14 @@
             <span class="sa">f</span><span class="s2">&quot;   Location: ~/Library/Application Support/Claude/claude_desktop_config.json&quot;</span>
         <span class="p">)</span>
         <span class="nb">print</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   {&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   {&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;     &quot;mcpServers&quot;: {&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       &quot;download&quot;: {&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         &quot;command&quot;: &quot;python&quot;,&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;         &quot;args&quot;: [&quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s1">&quot;]&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       }&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;     }&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   }&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;       }&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;     }&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   }&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">()</span>
 
     <span class="c1"># Print instructions</span>
@@ -555,7 +555,7 @@
     <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
 
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Run the Download Agent server&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Run the Download Agent server&quot;</span><span class="p">,</span>
         <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">RawDescriptionHelpFormatter</span><span class="p">,</span>
         <span class="n">epilog</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">Examples:</span>
@@ -573,18 +573,18 @@
     <span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--mcp&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Run MCP server for Claude Desktop (default)&#39;</span>
+        <span class="s2">&quot;--mcp&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Run MCP server for Claude Desktop (default)&quot;</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--api&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Run OpenAPI/FastAPI server for ChatGPT&#39;</span>
+        <span class="s2">&quot;--api&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Run OpenAPI/FastAPI server for ChatGPT&quot;</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--port&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Port for API server (default: 8000)&#39;</span>
+        <span class="s2">&quot;--port&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Port for API server (default: 8000)&quot;</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--server-url&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;--server-url&quot;</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Server URL for OpenAPI schema (e.g., ngrok URL like https://abc123.ngrok.io)&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Server URL for OpenAPI schema (e.g., ngrok URL like https://abc123.ngrok.io)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
@@ -605,7 +605,7 @@
 
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
@@ -618,7 +618,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright NO COPYRIGHT.</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
