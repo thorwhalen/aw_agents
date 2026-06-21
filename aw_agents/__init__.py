@@ -17,7 +17,7 @@ Example:
     >>>
     >>> agent = DownloadAgent()
     >>> adapter = MCPAdapter(agent, "download-agent")
-    >>> adapter.run()  # Serves agent via MCP for Claude
+    >>> # adapter.run() serves the agent via MCP for Claude (blocks; not run here)
 """
 
 __version__ = "0.1.0"
