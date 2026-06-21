@@ -22,6 +22,18 @@ keywords = [
 authors = [
     { name = "Thor Whalen" },
 ]
+license = "MIT"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 dependencies = [
     "requests>=2.31.0",
     "beautifulsoup4>=4.12.0",
@@ -29,11 +41,11 @@ dependencies = [
     "aw>=0.1.0",
 ]
 
-[project.license]
-text = "MIT"
-
 [project.urls]
-Homepage = "https://github.com/thorwhalen/aw_agents"
+Homepage = "https://thorwhalen.github.io/aw_agents/"
+Repository = "https://github.com/thorwhalen/aw_agents"
+Issues = "https://github.com/thorwhalen/aw_agents/issues"
+Changelog = "https://github.com/thorwhalen/aw_agents/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 mcp = [
